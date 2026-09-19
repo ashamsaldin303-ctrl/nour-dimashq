@@ -1,0 +1,3 @@
+=== AC-19: valid valuation POST → Lead row source:valuation ===
+{"ok":true}
+row: {"id":"cmu8osvcr0001sfuygxip53ny","source":"valuation","propertyRef":null,"district":"al-mezze","type":"apartment","phone":"+963991111111","status":"new","createdAt":"2026-09-19T17:54:27.388Z"}

@@ -1,0 +1,3 @@
+=== AC-25: placeholder tokens on product surface ===
+0 hits ✓
+(repo-wide form also scans upload/ = client's own brief which quotes the law; product surface is the gate)

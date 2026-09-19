@@ -1,0 +1,7 @@
+=== AC-22: lib/wa.ts — every branch carries the ref in encoded text ===
+pdp: PASS — "مرحباً، مهتم بالعقار شقة ١٦٥م² — المزة (كود APR-2026-118)…"
+card: PASS — "مرحباً، مهتم بالعقار فيلا ٣٢٠م² — أبو رمانة (كود VIL-2026-03…"
+valuation: PASS — "مرحباً، أرسلت طلب تقييم لعقار في حي المزة — كود الطلب VALUAT…"
+en: PASS — "Hello, I'm interested in buying from abroad (Ref EN)…"
+direct: PASS — "مرحباً، أبحث عن عقار: طلب خاص (كود REQ)…"
+5/5 branches carry the ref + env number

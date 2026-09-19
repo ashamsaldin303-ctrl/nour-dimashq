@@ -1,0 +1,9 @@
+=== AC-13: card badge count ≤1 + priority verified > جديد > حصري (seed render) ===
+cards rendered: 7
+APR-2026-118 → badges: 1 
+APR-2026-102 → badges: 1 
+VIL-2026-031 → badges: 1 
+HOU-2026-044 → badges: 1 
+APR-2026-090 → badges: 1 
+OFF-2026-019 → badges: 0 
+APR-2026-075 → badges: 0 + محجوز(status chip)

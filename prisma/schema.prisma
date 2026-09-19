@@ -1,8 +1,15 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Nour Dimashq (نور دمشق) — M1 Funnel Launch
+// Data contract from brief §6 (nour-dimashq-build-brief-v1.md).
+//
+// ENVIRONMENT ADAPTATION (see ASSUMPTIONS.md A-1):
+// The brief pins PostgreSQL; this sandbox provides SQLite only. Mapping:
+//   - enum ListingType/ListingStatus/VerificationLevel -> String columns,
+//     validated at every boundary by shared Zod unions in src/lib/schemas.ts
+//   - features String[] -> CSV String ("elevator,generator,solar")
+//   - media Json -> String containing JSON (parsed + Zod-validated in src/lib/listings.ts)
+//   - priceUsd Decimal @db.Decimal(12,2) -> Int (whole USD dollars)
+//   - priceSyp Decimal @db.Decimal(16,2) -> BigInt (whole SYP; never rendered statically in M1)
+// Reversal to PostgreSQL = switch provider + restore native types; app layer is unchanged.
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +20,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Agent {
+  id            String   @id @default(cuid())
+  nameAr        String
+  titleAr       String?
+  whatsapp      String // digits only, E.164 without +, e.g. "963991234567"
+  phoneLandline String?
+  isPrimary     Boolean  @default(false)
+  listings      Listing[]
+  createdAt     DateTime @default(now())
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Listing {
+  id               String   @id @default(cuid())
+  ref              String   @unique // "APR-2026-118" — office quotes refs
+  slug             String   @unique // "apartment-mezze-apr-118"
+  type             String // apartment|villa|house|land|shop|office|farm|building (Zod-validated)
+  status           String   @default("available") // available|reserved|sold|rented (Zod-validated)
+  priceUsd         Int? // whole USD dollars
+  priceSyp         BigInt? // whole SYP — never rendered statically (daily-rate law)
+  priceDate        DateTime? // «سعر اليوم؟» weekly ritual stamp
+  negotiable       Boolean  @default(true)
+  areaM2           Int
+  rooms            Int?
+  baths            Int?
+  floor            Int? // 0 = ground, -1 = basement
+  totalFloors      Int?
+  direction        String? // واجهة — Arabic display string, e.g. "غربية"
+  district         String // al-mezze | al-maliki | abu-rummaneh
+  yearBuilt        Int?
+  features         String   @default("") // CSV: elevator,generator,solar,waterTank,parking,balcony
+  media            String   @default("[]") // JSON string: [{url,kind,is_ai,room?}]
+  isSignature      Boolean  @default(false)
+  verification     String   @default("unverified") // unverified|deed_checked|verified (Zod-validated)
+  verificationDate DateTime?
+  titleAr          String?
+  titleEn          String?
+  descAr           String?
+  descEn           String?
+  agentId          String?
+  agent            Agent?   @relation(fields: [agentId], references: [id])
+  listedDate       DateTime @default(now())
+  soldDate         DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([status, district])
+  @@index([status, type])
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  source      String // pdp|card|valuation|en|direct
+  propertyRef String?
+  district    String?
+  type        String?
+  phone       String
+  status      String   @default("new")
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
 }

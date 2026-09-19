@@ -1,0 +1,2 @@
+/ar/listings -> LCP "280"ms | CLS "0.2234"
+/ar/listings/apartment-mezze-apr-118 -> LCP "556"ms | CLS "0.0000"

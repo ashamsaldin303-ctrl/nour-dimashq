@@ -1,0 +1,2 @@
+captured payload: {"property_id":"APR-2026-118","source":"pdp"}
+property_id + source present: PASS

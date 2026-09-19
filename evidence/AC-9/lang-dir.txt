@@ -1,0 +1,8 @@
+=== AC-9: server-set lang/dir ===
+/ -> <html lang="ar" dir="rtl" class="cairo_aa7c3390-module__u1Bcga__variable noto_kufi_arabic_3dc554c6-module__lj0Zxq__variable">
+/ar/listings -> <html lang="ar" dir="rtl" class="cairo_aa7c3390-module__u1Bcga__variable noto_kufi_arabic_3dc554c6-module__lj0Zxq__variable">
+/ar/valuation -> <html lang="ar" dir="rtl" class="cairo_aa7c3390-module__u1Bcga__variable noto_kufi_arabic_3dc554c6-module__lj0Zxq__variable">
+/ar/verification -> <html lang="ar" dir="rtl" class="cairo_aa7c3390-module__u1Bcga__variable noto_kufi_arabic_3dc554c6-module__lj0Zxq__variable">
+/ar/sold -> <html lang="ar" dir="rtl" class="cairo_aa7c3390-module__u1Bcga__variable noto_kufi_arabic_3dc554c6-module__lj0Zxq__variable">
+/ar/about -> <html lang="ar" dir="rtl" class="cairo_aa7c3390-module__u1Bcga__variable noto_kufi_arabic_3dc554c6-module__lj0Zxq__variable">
+/en -> <html lang="en" dir="ltr" class="cairo_aa7c3390-module__u1Bcga__variable noto_kufi_arabic_3dc554c6-module__lj0Zxq__variable">

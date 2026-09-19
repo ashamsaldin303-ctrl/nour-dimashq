@@ -1,122 +1,239 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* ==========================================================================
+   نور دمشق — Damascus Light token contract (brief §5, frozen 2026-09-19)
+   ONE authoritative file: if a value is not a token, it does not exist.
+   Light theme only (Damascus Light law — dark mode is out of M1 scope).
+   Numerals: `.num` + <bdi> everywhere a price/area/phone/ref renders.
+   Zero glyph-spacing on ALL Arabic (law — AC-26 gate).
+   ========================================================================== */
 
+@theme {
+  /* -- palette: warm-tinted limestone ramp + ONE copper-gold accent -- */
+  --color-stone-50: #F5F0E4;
+  --color-stone-100: #EDE6D4; /* page bg */
+  --color-stone-200: #E2D9C2;
+  --color-stone-300: #CFC3A6;
+  --color-stone-400: #B3A583;
+  --color-stone-500: #97896B;
+  --color-stone-600: #7A6E55;
+  --color-stone-700: #5C5340;
+  --color-stone-800: #3E382B;
+  --color-stone-900: #262119; /* basalt ink — text */
+
+  --color-gold-300: #D9AE6B; /* on-dark accent */
+  --color-gold-400: #C08A3E; /* badge fill (stone-900 text = 5.4:1) */
+  --color-gold-500: #9C6E2A; /* large text ≥24px + UI lines (3:1 on stone-100) */
+  --color-gold-600: #7A531B; /* accent text at body size (4.6:1 on stone-100) */
+
+  --color-ok-600: #4A6B3A;
+  --color-ok-50: #EAF0E4; /* success */
+  --color-bad-600: #A03D2E;
+  --color-bad-50: #F6E8E4; /* danger */
+
+  /* -- type scale (px): 12/13/14/16/18/20/24/30/46 · body leading 1.75 · headings 1.3–1.4 -- */
+  --text-micro: 12px;
+  --text-micro--line-height: 1.6;
+  --text-caption: 13px;
+  --text-caption--line-height: 1.65;
+  --text-sm: 14px;
+  --text-sm--line-height: 1.7;
+  --text-body: 16px;
+  --text-body--line-height: 1.75;
+  --text-lead: 18px;
+  --text-lead--line-height: 1.8;
+  --text-title: 20px;
+  --text-title--line-height: 1.6;
+  --text-h3: 24px;
+  --text-h3--line-height: 1.4;
+  --text-h2: clamp(24px, 4vw, 30px);
+  --text-h2--line-height: 1.35;
+  --text-h1: clamp(30px, 5vw, 46px);
+  --text-h1--line-height: 1.3;
+
+  /* -- spacing grid (px): 4·8·12·16·24·32·48·64·96 — banned: 5,10,18,36 -- */
+  --spacing: 4px;
+
+  /* -- radius: sm 8 · md 12 · lg 16 -- */
+  --radius: 12px;
+
+  /* -- elevation: matte daylight — soft warm shadows only -- */
+  --shadow-1: 0 1px 2px rgba(38, 33, 25, 0.08);
+  --shadow-2: 0 4px 12px rgba(38, 33, 25, 0.12);
+  --shadow-3: 0 12px 32px rgba(38, 33, 25, 0.16);
+
+  /* -- motion: ONE easing personality; durations reserved for M2 use too -- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 380ms;
+  --dur-cinema: 600ms; /* M2 mounting point */
+
+  /* -- z ladder: content 0 · sticky bar 40 · header 50 · overlay 60 · toast 70 -- */
+}
+
+/* Semantic tokens resolve at use site (shadcn/ui contract mapped onto the palette).
+   60-30-10: stone surfaces dominant · basalt ink text · gold ≤10% accent. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
+  --color-background: var(--color-stone-100);
+  --color-foreground: var(--color-stone-900);
+  --color-card: var(--color-stone-50);
+  --color-card-foreground: var(--color-stone-900);
+  --color-popover: var(--color-stone-50);
+  --color-popover-foreground: var(--color-stone-900);
+  --color-primary: var(--color-gold-600);
+  --color-primary-foreground: var(--color-stone-50);
+  --color-secondary: var(--color-stone-200);
+  --color-secondary-foreground: var(--color-stone-800);
+  --color-muted: var(--color-stone-200);
+  --color-muted-foreground: var(--color-stone-700);
+  --color-accent: var(--color-stone-200);
+  --color-accent-foreground: var(--color-stone-900);
+  --color-destructive: var(--color-bad-600);
+  --color-destructive-foreground: var(--color-stone-50);
+  --color-border: var(--color-stone-300);
+  --color-input: var(--color-stone-400);
+  --color-ring: var(--color-gold-600);
+  --color-chart-1: var(--color-gold-400);
+  --color-chart-2: var(--color-stone-500);
+  --color-chart-3: var(--color-ok-600);
+  --color-chart-4: var(--color-gold-600);
+  --color-chart-5: var(--color-stone-300);
+  --color-sidebar: var(--color-stone-50);
+  --color-sidebar-foreground: var(--color-stone-900);
+  --color-sidebar-primary: var(--color-gold-600);
+  --color-sidebar-primary-foreground: var(--color-stone-50);
+  --color-sidebar-accent: var(--color-stone-200);
+  --color-sidebar-accent-foreground: var(--color-stone-900);
+  --color-sidebar-border: var(--color-stone-300);
+  --color-sidebar-ring: var(--color-gold-600);
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  /* -- radius ladder anchored at --radius: 12px -- */
+  --radius-sm: calc(var(--radius) - 4px); /* 8px */
+  --radius-md: var(--radius);             /* 12px */
+  --radius-lg: calc(var(--radius) + 4px); /* 16px */
+  --radius-xl: calc(var(--radius) + 8px); /* 20px */
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* -- fonts: next/font self-hosted vars (subsets arabic+latin) -- */
+  --font-sans: var(--font-cairo), "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-cairo), "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-kufi), "Noto Kufi Arabic", serif;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-border);
   }
+
+  html {
+    color-scheme: light;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   body {
-    @apply bg-background text-foreground;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* focus rings appear instantly, never faded — gold-600 ≥3:1 on both ends */
+  :focus-visible {
+    outline: 2px solid var(--color-gold-600);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-gold-400) 30%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* every price, area, phone, ref — always inside <bdi> */
+  .num {
+    unicode-bidi: isolate;
+    direction: ltr;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* horizontal chip rows: scrollable without visible chrome (keyboard still scrolls) */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* thin scrollbars for tall scroll panes (galleries, long lists) */
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-stone-400) transparent;
+  }
+  .scroll-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: var(--color-stone-400);
+    border-radius: var(--radius-sm);
+  }
+}
+
+@layer components {
+  /* first focusable element on every page (AC-28) */
+  .skip-link {
+    position: fixed;
+    top: 16px;
+    inset-inline-start: 16px;
+    z-index: 70;
+    padding: 12px 16px;
+    background: var(--color-stone-900);
+    color: var(--color-stone-50);
+    font-family: var(--font-body);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-3);
+    transform: translateY(calc(-100% - 32px));
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  /* primary CTA hover — token-derived darkening (no new palette entries) */
+  .cta-primary:hover {
+    background: color-mix(in oklab, var(--color-gold-600) 88%, var(--color-stone-900));
   }
 }

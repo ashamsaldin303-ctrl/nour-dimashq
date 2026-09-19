@@ -1,0 +1,6 @@
+=== GATE 1: tsc --noEmit ===
+tsc: exit 0, 0 errors
+
+=== GATE 2: eslint . (max-warnings 0) ===
+$ eslint .
+eslint: exit 0, zero warnings

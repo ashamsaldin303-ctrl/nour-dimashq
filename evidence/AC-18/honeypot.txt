@@ -1,0 +1,3 @@
+=== AC-18: honeypot POST → 200 {ok:true} + ZERO insert ===
+{"ok":true}
+leads before=0 after=0 (equal = zero insert ✓)

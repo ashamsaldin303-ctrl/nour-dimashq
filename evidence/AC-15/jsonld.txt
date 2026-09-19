@@ -1,0 +1,5 @@
+=== AC-15: PDP JSON-LD present, NO price key ===
+RealEstateListing occurrences: 2
+"price" key occurrences: 0 (expected 0)
+--- JSON-LD script excerpt ---
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateListing","name":"شقة ١٦٥م² — المزة، إطلالة شارع رئيسي","datePosted":"2026-09-10T00:00:00.000Z","url":"/ar/listings/apartment-mezze-apr-118","image":"/poster.webp","itemOffered":{"@type":"Apartment","name":"شقة ١٦٥م² — المزة، إطلالة شارع رئيسي","number

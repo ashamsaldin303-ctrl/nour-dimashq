@@ -1,0 +1,377 @@
+     1→     1→---
+     2→     2→brief: nour-dimashq v1.0 (M1 — Funnel Launch)
+     3→     3→date: 2026-09-19
+     4→     4→plan_ref: nour-dimashq-plan.md@v1.0
+     5→     5→stack_pin: "Next.js 16.x · React 19.x · TypeScript 5 strict · Tailwind CSS 4.x · shadcn/ui · Prisma (PostgreSQL)"
+     6→     6→token_budget: ~12K (within 8–16K law)
+     7→     7→scope_law: "THIS BRIEF BUILDS THE FUNNEL ONLY (M1). The cinematic film layer (M2) is a SEPARATE future brief — do NOT build it."
+     8→     8→---
+     9→     9→
+    10→    10→# BUILD BRIEF — «نور دمشق» Nour Dimashq · M1 Funnel Launch
+    11→    11→
+    12→    12→> **الملخص العربي (تنفيذي):**
+    13→    13→> هذا عقد البناء الأول لموقع «نور دمشق» — مكتب عقاري دمشقي. المرحلة M1 تبني **القمع التجاري كاملاً**: الصفحة الرئيسية (الباب الخفيف)، فهرس العقارات مع فلاتر تُكتب في الرابط، صفحة كل عقار مع شريط واتساب ثابت، قمع التقييم «كم يساوي عقارك؟»، صفحة «عقار موثّق»، أرشيف «تم البيع»، صفحة قسم المؤسس، وممر إنجليزي للمغتربين — فوق هوية «نور دمشق» (حجر كلسي، بازلت، ذهبي واحد، كوفي للعناوين وCairo للنص).
+    14→    14→> **قانون هذا العقد:** القمع أولاً — لا سينما، لا فيديو، لا WebGL، لا GSAP في هذه المرحلة. البيانات التجريبية موسومة SAMPLE والبيانات الحقيقية قرار الإنسان قبل الإطلاق. كل سعر بالدولار + «السعر بالليرة يُحدَّد يومياً» بتاريخ. واتساب هو القمع.
+    15→    15→
+    16→    16→---
+    17→    17→
+    18→    18→## 1. Mission & Role
+    19→    19→
+    20→    20→You are the full-stack build agent for **Nour Dimashq (نور دمشق)**, a licensed Damascus real-estate brokerage. This brief is your ONLY authority — it is self-contained; you need zero clarifying questions. The site's business model: a trust-first listings funnel where **WhatsApp conversations are the conversion event**, verification deeds are the moat, and the cinematic scroll film (built later, never in this brief) is ornament on top. Your job now: ship the complete M1 funnel — every route, every state, every wa.me link, every gate — so a Syrian buyer on a $200 Android inside the Facebook WebView sees the listings grid **paint before Instagram renders its own link preview**.
+    21→    21→
+    22→    22→**Rule zero — never invent:** any unknown not answered by this file goes to `ASSUMPTIONS.md` (max 5 entries: id, decision, rationale, risk, reversal). A blocking unknown (would change routes/schema/tokens) → stop and emit a BLOCKED report (condition → hypothesis → attempts → options → recommended default → the exact question). Never guess forward on money, legal, or brand identity.
+    23→    23→
+    24→    24→## 2. Pinned Stack (exact — never "latest")
+    25→    25→
+    26→    26→| Layer | Pin | Contrast rule (use X, NEVER legacy-Y) |
+    27→    27→|---|---|---|
+    28→    28→| Framework | Next.js 16.x, App Router | RSC + Route Handlers; NEVER pages/, NEVER getInitialProps |
+    29→    29→| React | 19.x | Server Components for data pages; `"use client"` ONLY for filter bar, valuation form, analytics |
+    30→    30→| TypeScript | 5.x `strict: true` | NEVER `any` (unknown + narrowing); NEVER non-null assertions on data |
+    31→    31→| Styles | Tailwind CSS 4.x via `@theme` in `app/globals.css` | NEVER `tailwind.config.js`; NEVER raw hex in JSX |
+    32→    32→| Components | shadcn/ui (CLI-installed) | NEVER hand-rolled copies of shadcn primitives |
+    33→    33→| Data | Prisma + PostgreSQL (`DATABASE_URL`; Supabase-compatible) | Singleton client in `lib/db.ts`; NEVER instantiate per request; NEVER raw SQL strings |
+    34→    34→| Fonts | `next/font/google`: **Noto Kufi Arabic** (400,700 — headings) + **Cairo** (400,500,600,700 — body), subsets `["arabic","latin"]` | NEVER `<link>` to fonts.googleapis.com; NEVER runtime CDN fonts |
+    35→    35→| Images | `next/image` with explicit `sizes` + `width`/`height` | NEVER raw `<img>` |
+    36→    36→| Validation | Zod on every API boundary | NEVER unvalidated `req.body` reads |
+    37→    37→| Tests | Vitest (unit) + Playwright (E2E, prod build) + playwright-axe (a11y) | — |
+    38→    38→| Motion | **NONE.** Zero animation libraries in M1. CSS transitions only (tokens §5) | NEVER import gsap/lenis/three in this brief |
+    39→    39→
+    40→    40→Version echo: your ACK (§12) must state the exact versions resolved in `package.json` for every row above.
+    41→    41→
+    42→    42→## 3. Scope IN / OUT
+    43→    43→
+    44→    44→**IN — MUST (all of it):** routes of §4 · token contract §5 · Prisma schema §6 · content §7 · lead API + wa.me + GA4 §8 · all acceptance criteria §9 · verification loop §10.
+    45→    45→
+    46→    46→**IN — SHOULD:** OG image kit per PDP · `docs/api-route-table.md` + `docs/component-inventory.md` + `CONTENT.md` · lazy static map card (OSM iframe, loading="lazy") on About.
+    47→    47→
+    48→    48→**IN — COULD (only if MUST is green):** print-friendly PDP sheet.
+    49→    49→
+    50→    50→**OUT — do NOT build (labeled, will NOT be built in this brief):**
+    51→    51→- ❌ The cinematic film: no WebGL, no shaders, no GSAP, no Lenis, no `<video>`, no depth maps, no scroll pinning. (M2 brief, later.)
+    52→    52→- ❌ Tier B video, consent door UI, MB labels, cinema manifests. (M2.)
+    53→    53→- ❌ Service worker, RUM beacon, 360° panoramas (Pannellum), per-listing films. (M2/v1.1.)
+    54→    54→- ❌ Admin UI, uploads, auth, webhooks. Content ops = seed script + CONTENT.md publish path.
+    55→    55→- ❌ Dark mode. v1 is daylight-only (Damascus Light law).
+    56→    56→- ❌ Stripe/payments or any paid dependency. Zero recurring licenses is the law.
+    57→    57→- ❌ /en listings index (EN is a one-page corridor only).
+    58→    58→
+    59→    59→M2 mounting points (build these hooks, nothing more): home hero section carries `id="film-prologue"` and a `data-cinema-slot="hero"` attribute; tokens §5 include motion durations for later use.
+    60→    60→
+    61→    61→## 4. Pages Map (route → one job → ordered sections)
+    62→    62→
+    63→    63→Server-set locale: every `/ar/**` and `/` route renders `<html lang="ar" dir="rtl">`; `/en` renders `lang="en" dir="ltr"`. NEVER client-side dir switching.
+    64→    64→
+    65→    65→| Route | One job | Ordered sections (top→bottom) |
+    66→    66→|---|---|---|
+    67→    67→| `/` (ar, default) | Convince in 5 seconds this office is verifiable, then hand off | ① Poster hero (16:9, ≤60 KB, sole `fetchpriority="high"`, LCP): H1 + subline + dual CTA ② Trust strip (3 proof chips) ③ «مجموعة منتقاة» Signature collection (4–6 ListingCards from seed `isSignature`) ④ Verification teaser («عقار موثّق» → /ar/verification) ⑤ Founder intro snippet (2 sentences + link) ⑥ Footer (license `[TO-OBTAIN]`, 011, WhatsApp CTA, address) |
+    68→    68→| `/ar/listings` | Let a buyer filter & compare in ≤3 taps | ① Filter bar (client component): purpose (بيع/إيجار via status/type mapping — v1 sale only, rent toggle disabled with label «قريباً»), type, district (المزة/المالكي/أبو رمانة), price range, rooms, features (generator/solar first-class) ② Results count line («٨ عقارات») ③ Card grid (1 col @375, 2 @768, 3 @1440) ④ Zero-result state → «اطلب منّا» wa.me handoff |
+    69→    69→| `/ar/listings/[slug]` | Convert to a WhatsApp conversation carrying the ref | ① Full-bleed hero photo (real/sample placeholder, 4:3) ② Key-facts bar: dual-currency price + date stamp, area/rooms/baths/floor/واجهة — equal-width icon tiles ③ Trust panel (verification status + what was checked + date; or honest «غير موثّق») ④ Gallery grid (room-tagged, photo-count badge «٣٢ صورة» style, floor-plan tab if present) ⑤ Description + highlights chips ⑥ Location card (district + distance chips; SHOULD: lazy OSM iframe) ⑦ Agent card ⑧ Similar properties (same type/district/price band, 3 cards) ⑨ Sticky bottom wa.me bar («احجز معاينة — واتساب») — always visible |
+    70→    70→| `/ar/valuation` | Capture seller leads in 3 steps | ① H1 + promise ② 3-step form (one question per screen): district select → type segmented → phone (country-code aware) + submit ③ Privacy line («رقمك يبقى معنا — لا رسائل جماعية») ④ Success state: «سنجيب خلال ٢٤ ساعة» + direct wa.me handoff CTA |
+    71→    71→| `/ar/verification` | Sell the deed-check service | ① H1 + what is checked ② 5-step process timeline ③ Fee line («٥٠–١٥٠ دولاراً») ④ wa.me CTA «أريد توثيق عقار» ⑤ FAQ (3 items) |
+    72→    72→| `/ar/sold` | Prove activity with dated evidence | ① H1 «تم البيع» + honesty line ② Dated proof cards (original photo, original price, sold date, ref) |
+    73→    73→| `/ar/about` | The founder vow | ① Vow H1 + 2 paragraphs (verbatim §7) ② License + family name + 011 landline `[TO-OBTAIN]` slots ③ Office address card ④ CTA |
+    74→    74→| `/en` | Route diaspora buyers into the same funnel | ① Hero trust line (EN) ② Verification explainer ③ Three explainers: *Buying from abroad · POA mechanics · Funds & deed risk* (each doubles verbatim as a WhatsApp reply template — write them as paste-able paragraphs) ④ EN wa.me CTA (prefilled EN text) |
+    75→    75→| `POST /api/lead` | Persist leads, spam-guarded | See §8 |
+    76→    76→| `GET /api/health` | Probe | `{ok:true}` |
+    77→    77→
+    78→    78→**Filter law:** the index page is prerendered static; the filter bar is a `"use client"` component that reads AND writes `searchParams` (`/ar/listings?district=al-mezze&min=80k&rooms=3`) and toggles card visibility client-side. Shareable URLs + working back button + zero server roundtrips. Serialize filter state to the querystring on every change (replaceState, no history spam).
+    79→    79→
+    80→    80→**Component inventory (author at T0.4, canonical `docs/component-inventory.md`):** `PosterHero`, `TrustStrip`, `ListingCard`, `FilterBar`, `KeyFactsBar`, `TrustPanel`, `GalleryGrid`, `AgentCard`, `SimilarListings`, `StickyWaBar`, `ValuationForm`, `ProofCard`, `FooterOffice`, `SectionHeading`. NEVER recreate an inventoried component.
+    81→    81→
+    82→    82→## 5. Design Tokens (exact values — freeze before any feature task)
+    83→    83→
+    84→    84→Damascus Light: limestone daylight, basalt ink, ONE copper-gold accent. Light theme only. Generate `app/globals.css` FROM this table; never retype values elsewhere.
+    85→    85→
+    86→    86→```css
+    87→    87→@theme {
+    88→    88→  /* palette — warm-tinted stone ramp + gold */
+    89→    89→  --color-stone-50:#F5F0E4; --color-stone-100:#EDE6D4;  /* page bg */
+    90→    90→  --color-stone-200:#E2D9C2; --color-stone-300:#CFC3A6; --color-stone-400:#B3A583;
+    91→    91→  --color-stone-500:#97896B; --color-stone-600:#7A6E55; --color-stone-700:#5C5340;
+    92→    92→  --color-stone-800:#3E382B; --color-stone-900:#262119;  /* basalt ink — text */
+    93→    93→  --color-gold-300:#D9AE6B;   /* on-dark accent */
+    94→    94→  --color-gold-400:#C08A3E;   /* badge fill (stone-900 text = 5.4:1) */
+    95→    95→  --color-gold-500:#9C6E2A;   /* large text ≥24px + UI lines (3:1 on stone-100) */
+    96→    96→  --color-gold-600:#7A531B;   /* accent text at body size (4.6:1 on stone-100) */
+    97→    97→  --color-ok-600:#4A6B3A; --color-ok-50:#EAF0E4;         /* success */
+    98→    98→  --color-bad-600:#A03D2E; --color-bad-50:#F6E8E4;       /* danger */
+    99→    99→  /* type */
+   100→   100→  --font-heading:"Noto Kufi Arabic",serif;
+   101→   101→  --font-body:"Cairo",sans-serif;
+   102→   102→  /* scale (px): 12/13/14/16/18/20/24/30/38/46 · body leading 1.75 · headings 1.4 */
+   103→   103→  --text-body:16px; --text-body--line-height:1.75;
+   104→   104→  --text-lead:18px; --text-lead--line-height:1.8;
+   105→   105→  --text-h1:clamp(30px,5vw,46px); --text-h1--line-height:1.3;
+   106→   106→  --text-h2:clamp(24px,4vw,30px); --text-h2--line-height:1.35;
+   107→   107→  /* spacing grid (px): 4·8·12·16·24·32·48·64·96 — banned: 5,10,18,36 */
+   108→   108→  --spacing:4px;
+   109→   109→  /* radius */
+   110→   110→  --radius-sm:8px; --radius-md:12px; --radius-lg:16px;
+   111→   111→  /* elevation — matte daylight: soft warm shadows only */
+   112→   112→  --shadow-1:0 1px 2px rgba(38,33,25,.08);
+   113→   113→  --shadow-2:0 4px 12px rgba(38,33,25,.12);
+   114→   114→  --shadow-3:0 12px 32px rgba(38,33,25,.16);
+   115→   115→  /* motion — one easing personality; durations reserved for M2 use too */
+   116→   116→  --ease-out:cubic-bezier(.22,1,.36,1);
+   117→   117→  --dur-fast:120ms; --dur-base:220ms; --dur-slow:380ms; --dur-cinema:600ms;
+   118→   118→  /* z ladder: content 0 · sticky bar 40 · header 50 · overlay 60 · toast 70 */
+   119→   119→}
+   120→   120→```
+   121→   121→
+   122→   122→**Contrast floors (measured, not eyeballed):** body text stone-900 on stone-100 (12.5:1) · accent text gold-600 (4.6:1) · large text/UI lines gold-500 (3:1) · focus ring gold-600 ≥3:1 on both stone-100 and stone-900. `letter-spacing: 0` on ALL Arabic (law). Numerals: `.num{unicode-bidi:isolate;direction:ltr;font-variant-numeric:tabular-nums}` — every price, area, phone, ref wrapped in `<bdi>`.
+   123→   123→
+   124→   124→**Brand motif:** a parametric mashrabiya lattice SVG pattern (geometric 8-point star grid, stroke stone-300/gold-400, ≤6 KB inline) used as: hero poster background layer (beneath a stone gradient), section dividers, and the «صورة العقار قادمة» placeholder tile. No imagery of fake rooms, ever.
+   125→   125→
+   126→   126→## 6. Data Contract (Prisma schema verbatim + seed law)
+   127→   127→
+   128→   128→```prisma
+   129→   129→generator client { provider = "prisma-client-js" }
+   130→   130→datasource db  { provider = "postgresql"  url = env("DATABASE_URL") }
+   131→   131→
+   132→   132→enum ListingType   { apartment villa house land shop office farm building }
+   133→   133→enum ListingStatus { available reserved sold rented }
+   134→   134→enum VerificationLevel { unverified deed_checked verified }
+   135→   135→
+   136→   136→model Agent {
+   137→   137→  id            String   @id @default(cuid())
+   138→   138→  nameAr        String
+   139→   139→  titleAr       String?
+   140→   140→  whatsapp      String          // digits only, E.164 without +, e.g. "963991234567"
+   141→   141→  phoneLandline String?
+   142→   142→  isPrimary     Boolean  @default(false)
+   143→   143→  listings      Listing[]
+   144→   144→  createdAt     DateTime @default(now())
+   145→   145→}
+   146→   146→
+   147→   147→model Listing {
+   148→   148→  id               String           @id @default(cuid())
+   149→   149→  ref              String  @unique  // "APR-2026-118" — office quotes refs
+   150→   150→  slug             String  @unique  // "apartment-mezze-apr-118"
+   151→   151→  type             ListingType
+   152→   152→  status           ListingStatus    @default(available)
+   153→   153→  priceUsd         Decimal?         @db.Decimal(12,2)
+   154→   154→  priceSyp         Decimal?         @db.Decimal(16,2)
+   155→   155→  priceDate        DateTime?        // «سعر اليوم؟» weekly ritual stamp
+   156→   156→  negotiable       Boolean          @default(true)
+   157→   157→  areaM2           Int
+   158→   158→  rooms            Int?
+   159→   159→  baths            Int?
+   160→   160→  floor            Int?
+   161→   161→  totalFloors      Int?
+   162→   162→  direction        String?          // واجهة
+   163→   163→  district         String           // al-mezze | al-maliki | abu-rummaneh
+   164→   164→  yearBuilt        Int?
+   165→   165→  features         String[]         // elevator,generator,solar,waterTank,parking,balcony
+   166→   166→  media            Json             @default("[]")  // [{url,kind,is_ai,room?}]
+   167→   167→  isSignature      Boolean          @default(false)
+   168→   168→  verification     VerificationLevel @default(unverified)
+   169→   169→  verificationDate DateTime?
+   170→   170→  titleAr          String?
+   171→   171→  titleEn          String?
+   172→   172→  descAr           String?
+   173→   173→  descEn           String?
+   174→   174→  agentId          String?
+   175→   175→  agent            Agent?           @relation(fields:[agentId],references:[id])
+   176→   176→  listedDate       DateTime         @default(now())
+   177→   177→  soldDate         DateTime?
+   178→   178→  createdAt        DateTime         @default(now())
+   179→   179→  updatedAt        DateTime         @updatedAt
+   180→   180→}
+   181→   181→
+   182→   182→model Lead {
+   183→   183→  id          String   @id @default(cuid())
+   184→   184→  source      String   // pdp|card|valuation|en|direct
+   185→   185→  propertyRef String?
+   186→   186→  district    String?
+   187→   187→  type        String?
+   188→   188→  phone       String
+   189→   189→  status      String   @default("new")
+   190→   190→  createdAt   DateTime @default(now())
+   191→   191→}
+   192→   192→```
+   193→   193→
+   194→   194→**Media law (structural):** `media` items are `{url, kind:"photo"|"floorplan", is_ai:boolean, room?:string}`. Under `/listings/**` render paths, `is_ai === true` is a **build error** (grep gate §10). M1 sample imagery = generated placeholder tiles (mashrabiya motif + district label + «صورة العقار قادمة»), `is_ai:false`, clearly SAMPLE.
+   195→   195→
+   196→   196→**Seed (`prisma/seed.ts`, idempotent, 8 listings — ALL marked SAMPLE in a header comment + CONTENT.md):**
+   197→   197→
+   198→   198→| ref | type | district | area | rooms | floor | USD | status | verification | signature |
+   199→   199→|---|---|---|---|---|---|---|---|---|---|
+   200→   200→| APR-2026-118 | apartment | al-mezze | 165 | 3 | 3/5 | 118,000 | available | verified | ✔ |
+   201→   201→| APR-2026-102 | apartment | al-maliki | 140 | 2 | 2/4 | 95,000 | available | deed_checked | ✔ |
+   202→   202→| VIL-2026-031 | villa | abu-rummaneh | 320 | 5 | G/2 | 260,000 | available | verified | ✔ |
+   203→   203→| APR-2026-090 | apartment | al-mezze | 110 | 2 | 4/6 | 72,000 | available | unverified | — |
+   204→   204→| HOU-2026-044 | house | al-maliki | 210 | 4 | G/1 | 145,000 | available | deed_checked | — |
+   205→   205→| APR-2026-075 | apartment | al-mezze | 95 | 2 | 1/5 | 68,000 | reserved | unverified | — |
+   206→   206→| APR-2025-211 | apartment | al-maliki | 130 | 3 | 3/5 | 88,000 | sold (2026-06-14) | deed_checked | — |
+   207→   207→| OFF-2026-019 | office | abu-rummaneh | 85 | 2 | 2/8 | 60,000 | available | unverified | — |
+   208→   208→
+   209→   209→All seeds: `negotiable:true`, `priceDate` = build date, `features` realistic mixes (always include `solar` or `generator` on ≥4 — post-2020 differentiator), Arabic titles like «شقة ١٦٥م² — المزة، إطلالة شارع رئيسي», 3-line Arabic descriptions with honest specifics (طراز البناء، الطابق، واجهة، أجهزة). One agent: `nameAr:"أبو محمد الحلبي"`, `titleAr:"مؤسس المكتب"` (SAMPLE).
+   210→   210→
+   211→   211→## 7. Content (real copy verbatim — content-source law)
+   212→   212→
+   213→   213→**Placeholder policy: NEVER ship lorem/Acme/test@example.** Every string below is final copy. Listings data = SAMPLE seed (source: sample — swap path in CONTENT.md). Office identity fields = `[TO-OBTAIN]` env slots (source: to-obtain — launch-blocking, not build-blocking).
+   214→   214→
+   215→   215→**Home hero (verbatim):**
+   216→   216→- H1: «بيوت دمشقية مختارة، بسنود موثّقة»
+   217→   217→- Sub: «مكتب عقاري دمشقي — نبيع البيت ونحفظ حكايته. كل عقار نفحص سنده قبل النشر، ونصوّره كما هو، والسعر بالدولار يُحدَّد بالليرة يومياً.»
+   218→   218→- CTA primary (gold): «تسوّق العقارات» → `/ar/listings` · CTA secondary: «كم يساوي عقارك؟» → `/ar/valuation`
+   219→   219→- Trust strip chips: «تحقّق من السند قبل النشر» · «أسعار بتاريخ اليوم» · «أرشيف مبيعات مؤرَّخ»
+   220→   220→
+   221→   221→**Valuation (verbatim):** H1 «كم يساوي عقارك؟» · promise: «نجيب خلال ٢٤ ساعة بنطاق سعري تقريبي من صفقات حقيقية — مجاناً، والوعد الذي لا يستطيع أي منشور فيسبوك تقديمه.» · steps labels: «الحي» / «نوع العقار» / «رقم هاتفك» · privacy: «رقمك يبقى معنا — لا رسائل جماعية ولا مشاركة مع أي طرف.» · success: «شكراً — سيتواصل معك المكتب خلال ٢٤ ساعة. استعجل؟ راسلنا مباشرة:» + wa.me CTA.
+   222→   222→
+   223→   223→**Verification (verbatim):** H1 «عقار موثّق» · lede: «نفحص سند الملكية مقابل السجل العقاري، ونراجع تاريخ الملكية ومساحة العقار، ونسلّمك تقريراً مصوّراً — قبل أن تدفع على العقار فلساً واحداً.» · fee line: «٥٠–١٥٠ دولاراً حسب العقار» · 5 steps: «تواصل واتساب» → «اتفاق الرسوم» → «طلب السجل العقاري (ميدانياً)» → «تقرير مصوّر يصلك في المحادثة» → «شارة عقار موثّق إذا وكّلتنا البيع». FAQ: (1) هل التحقق إلزامي للنشر؟ لا — لكن كل عقار موثّق يباع أسرع. (2) هل تفحصون عقارات غير معروضة عندكم؟ نعم — الخدمة لأي عقار في دمشق. (3) كم يستغرق؟ من ٢ إلى ٣ أسابيع بحسب السجل.
+   224→   224→
+   225→   225→**Sold archive (verbatim):** H1 «تم البيع» · line: «كل عقار نبيعه يتحوّل إلى إثبات مؤرَّخ — لأن السوق الذي يحكم بالسمعة يستحق أرشيفاً صادقاً.»
+   226→   226→
+   227→   227→**About (verbatim, with slots):** H1 «نبيع البيت ونحفظ حكايته» · P1: «نور دمشق ليس موقعاً يعرض إعلانات — بل مكتباً دمشقياً صغيراً يختار البيوت التي يستحقها هذا البلد، ويتحقق من كل سند قبل أن يراه أحد. اسمنا وترخيصنا وأرقام مبيعاتنا أمامك، لأن الثقة هنا تُورَّث ولا تُشترى.» · P2: «إن كنت تشتري من الخارج: نجهّز لك التوكيل والتحقق والتسليم المرحلي، ونتابع معك حتى القيد. وإن كنت تبيع: نعطيك سعراً صادقاً بالدولار لا رقماً للمجاملة.» · Slots `[TO-OBTAIN]`: `OFFICE_LICENSE`, `FOUNDER_NAME`, `LANDLINE_011`, `OFFICE_ADDRESS`.
+   228→   228→
+   229→   229→**/en (verbatim):** H1 "Verified Damascus real estate — bought from abroad, without the guesswork." · Explainer 1 *Buying from abroad*: full remote journey (video tour → verification → POA → milestone payments → registered handover), written to paste verbatim into a WhatsApp reply. · Explainer 2 *POA mechanics*: notarized at a Syrian embassy/consulate; what it must authorize; we coordinate the lawyer. · Explainer 3 *Funds & deed risk*: milestone payments (contract/registration/handover), documented handover, the paid deed-check that de-risks all of it. · CTA: "Message us on WhatsApp — English spoken."
+   230→   230→
+   231→   231→**Footer (all routes):** «مكتب نور دمشق العقاري — دمشق» · license slot · 011 landline slot · WhatsApp CTA · «الأسعار بالدولار والسعر بالليرة يُحدَّد يومياً بتاريخ آخر تحديث».
+   232→   232→
+   233→   233→**Banned copy words (grep gate):** seamlessly/supercharge/unlock/elevate/revolutionize-type hype — AR equivalents («سلس»، «ثوري»، «فائق») — and any fabricated numbers. Real small numbers only («٢ عقارات موثّقة هذا الشهر» style derives from seed, never hardcoded).
+   234→   234→
+   235→   235→## 8. API & Integrations
+   236→   236→
+   237→   237→**Route table (canonical copy → `docs/api-route-table.md`):**
+   238→   238→
+   239→   239→| METHOD | path | purpose | auth | req schema | res schema | statuses | notes |
+   240→   240→|---|---|---|---|---|---|---|---|
+   241→   241→| GET | `/` , `/ar/**` pages | SSG HTML | — | — | HTML | 200 | server-set `lang=ar dir=rtl` |
+   242→   242→| GET | `/ar/listings` | index + client filters | — | querystring filters | HTML | 200 | static shell + client filter |
+   243→   243→| GET | `/ar/listings/[slug]` | PDP | — | — | HTML | 200/404 | `generateStaticParams` from seed |
+   244→   244→| GET | `/en` | corridor | — | — | HTML | 200 | `lang=en dir=ltr` |
+   245→   245→| POST | `/api/lead` | lead capture | public | `LeadInput` (Zod) | `{ok:boolean}` | 200/429 | honeypot + rate limit |
+   246→   246→| GET | `/api/health` | probe | — | — | `{ok:true}` | 200 | — |
+   247→   247→
+   248→   248→**Zod contract + handler exemplar (complies with every rule — copy this standard):**
+   249→   249→
+   250→   250→```ts
+   251→   251→// app/api/lead/route.ts
+   252→   252→const LeadInput = z.object({
+   253→   253→  source: z.enum(["pdp","card","valuation","en","direct"]),
+   254→   254→  propertyRef: z.string().regex(/^[A-Z]{3}-\d{4}-\d{3}$/).optional(),
+   255→   255→  district: z.string().max(40).optional(),
+   256→   256→  type: z.string().max(20).optional(),
+   257→   257→  phone: z.string().regex(/^\+?[0-9]{8,15}$/),
+   258→   258→  honeypot: z.string().max(0).optional().default(""),   // filled = bot
+   259→   259→});
+   260→   260→export async function POST(req: Request) {
+   261→   261→  const body = LeadInput.safeParse(await req.json());
+   262→   262→  if (!body.success) return Response.json({ok:false}, {status:422});
+   263→   263→  if (body.data.honeypot) return Response.json({ok:true});      // silent sink
+   264→   264→  if (rateLimited(req))   return Response.json({ok:false}, {status:429}); // in-memory, 5/min/IP
+   265→   265→  await db.lead.create({data:{...body.data, status:"new"}});
+   266→   266→  await notifyTelegramOptional(body.data);                       // env-gated, never blocks
+   267→   267→  return Response.json({ok:true});
+   268→   268→}
+   269→   269→```
+   270→   270→
+   271→   271→Example request: `{"source":"valuation","district":"al-mezze","type":"apartment","phone":"+963991234567"}` → `{"ok":true}` (row created). Honeypot variant → `{"ok":true}` (NO row).
+   272→   272→
+   273→   273→**`lib/wa.ts` — the funnel's single throat (exemplar):**
+   274→   274→
+   275→   275→```ts
+   276→   276→const NUM = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER!; // digits only, e.g. "963991234567"
+   277→   277→export function waLink(ref: string, title: string, source: "pdp"|"card"|"valuation"|"en") {
+   278→   278→  const text = source === "en"
+   279→   279→    ? `Hello, I'm interested in ${title} (Ref ${ref})`
+   280→   280→    : `مرحباً، مهتم بالعقار ${title} (كود ${ref})`;
+   281→   281→  return `https://wa.me/${NUM}?text=${encodeURIComponent(text)}`;
+   282→   282→}
+   283→   283→```
+   284→   284→
+   285→   285→Every CTA in the app routes through this builder — one number, four sources, free attribution. Unit-test all four branches (ref present in encoded text).
+   286→   286→
+   287→   287→**GA4 (exactly 2 product events — never more):** `whatsapp_click {property_id, source}` on every wa.me click · `time_to_first_listing {value_ms}` once, when the first ListingCard enters viewport (`performance.getEntriesByType("navigation")` baseline). Via `lib/analytics.ts` with `NEXT_PUBLIC_GA4_ID` env — unset = no-op logger. Zero other custom events.
+   288→   288→
+   289→   289→**Env (`/.env.example`):** `DATABASE_URL` · `NEXT_PUBLIC_WHATSAPP_NUMBER` · `NEXT_PUBLIC_GA4_ID` (optional) · `NEXT_PUBLIC_SITE_URL` · `TELEGRAM_BOT_TOKEN` + `OFFICE_CHAT_ID` (optional).
+   290→   290→
+   291→   291→**SEO law:** content in DOM, never canvas-only. PDP `generateMetadata`: Arabic title, description, `og:image` = listing poster, `og:locale=ar_SY`. JSON-LD `RealEstateListing` with `datePosted`, `itemOffered` — **`price` deliberately OMITTED** (stale price = published lie). hreflang: `ar` ↔ `en` only where /en has an equivalent (it doesn't for listings — only x-default → ar).
+   292→   292→
+   293→   293→## 9. Acceptance Criteria (binary · each names its check · no and/or)
+   294→   294→
+   295→   295→**Project DoD (once, in AGENTS.md):** `tsc --noEmit` 0 errors · `eslint --max-warnings 0` · `next build` green · zero console errors on any route · all tests green.
+   296→   296→
+   297→   297→| ID | Criterion (binary) | Check |
+   298→   298→|---|---|---|
+   299→   299→| AC-1 | Build+types+lint all green | CI log |
+   300→   300→| AC-2 | Lighthouse perf ≥0.90 on `/`, `/ar/listings`, one PDP (Syria profile 3.3Mbps/100ms RTT) | LHCI report → `/evidence/AC-2/` |
+   301→   301→| AC-3 | LCP ≤2500ms AND CLS ≤0.02 on those 3 routes | LHCI assertions |
+   302→   302→| AC-4 | `/` total byte weight ≤1,250,000 | LHCI assertion |
+   303→   303→| AC-5 | Route JS ≤80KB gz on every M1 route | LHCI `resource-summary:script:size` ≤81920 |
+   304→   304→| AC-6 | Home poster ≤60,000 bytes AND exactly one `fetchpriority="high"` on `/` | `curl -s / | grep -c fetchpriority` = 1 + `wc -c` on asset |
+   305→   305→| AC-7 | axe: 0 critical AND 0 serious on every route | playwright-axe report → `/evidence/AC-7/` |
+   306→   306→| AC-8 | No horizontal scroll at 375px on any route | Playwright `document.scrollWidth ≤ 375` |
+   307→   307→| AC-9 | `<html lang="ar" dir="rtl">` on `/`+`/ar/**`; `lang="en" dir="ltr"` on `/en` | `curl | grep '<html'` |
+   308→   308→| AC-10 | Filter changes write querystring; browser Back restores previous result set | Playwright journey J1 |
+   309→   309→| AC-11 | Zero-result filter state shows «اطلب منّا» wa.me link (not a dead end) | Playwright: `?district=al-maliki&min=500k` |
+   310→   310→| AC-12 | Every ListingCard price wrapped in `<bdi>` with `.num` class | DOM assertion |
+   311→   311→| AC-13 | Card badge count ≤1 AND priority verified>جديد>حصري | unit test on seed render |
+   312→   312→| AC-14 | PDP static HTML contains ref code AND district name AND «واتساب» | `curl -s <pdp> | grep -c "APR-2026-118\|المزة\|واتساب"` ≥3 |
+   313→   313→| AC-15 | PDP JSON-LD present AND contains no `"price"` key | `grep RealEstateListing` + `!grep '"price"'` |
+   314→   314→| AC-16 | Sticky bar href matches `wa.me/<env>?text=…<ref>…` on PDP | DOM assertion |
+   315→   315→| AC-17 | Valuation = 3 screens, one question each | Playwright journey J2 |
+   316→   316→| AC-18 | Honeypot-filled POST → 200 `{ok:true}` AND zero DB insert | route test |
+   317→   317→| AC-19 | Valid valuation POST → Lead row `source:"valuation"` | route test |
+   318→   318→| AC-20 | Sold listing APR-2025-211 renders in `/ar/sold` with sold date AND original price | Playwright |
+   319→   319→| AC-21 | `/en` contains all 3 explainer H2s AND an EN wa.me link | `curl | grep -c "POA\|Buying from abroad\|Funds"` ≥3 |
+   320→   320→| AC-22 | `lib/wa.ts` 4 branches: each prefilled text contains the ref | vitest |
+   321→   321→| AC-23 | `whatsapp_click` payload carries `property_id` AND `source` | vitest on `trackWaClick` |
+   322→   322→| AC-24 | `grep -r "is_ai\":\s*true" --include="*.ts" app/ components/` → 0 hits under listings paths | grep gate |
+   323→   323→| AC-25 | `grep -ri "lorem\|acme\|test@example"` over repo → 0 hits | grep gate |
+   324→   324→| AC-26 | `grep -r "letter-spacing" app/` → 0 hits on Arabic text rules | grep gate |
+   325→   325→| AC-27 | `[TO-OBTAIN]` register present in CONTENT.md with all 4 office slots | grep CONTENT.md |
+   326→   326→| AC-28 | Skip link «تخطَّ إلى العقارات» is the first focusable element on `/` | Playwright keyboard |
+   327→   327→
+   328→   328→## 10. Verification Loop (exact battery — run per task AND full at the end)
+   329→   329→
+   330→   330→```bash
+   331→   331→pnpm tsc --noEmit && pnpm eslint . --max-warnings 0
+   332→   332→pnpm next build                     # static export of listings pages via generateStaticParams
+   333→   333→pnpm vitest run                     # unit: wa.ts, badge priority, analytics payloads
+   334→   334→pnpm playwright test                # prod build · journeys J1 J2 J3 · 375/768/1440 · axe
+   335→   335→grep -r "is_ai\":\s*true" app/ components/ || true        # AC-24 gate
+   336→   336→grep -ri "lorem\|acme\|test@example" . --exclude-dir=node_modules || true   # AC-25
+   337→   337→npx @lhci/cli autorun               # assertions: perf≥.9 · LCP≤2500 · CLS≤.02 ·
+   338→   338→                                    # byteWeight≤1250000 · script≤81920 · document≤51200
+   339→   339→```
+   340→   340→
+   341→   341→Playwright journeys (prod build): **J1** filter→PDP→wa.me click (`href` contains ref, event fires) · **J2** valuation 3 steps→submit→success state · **J3** /ar/sold proof card → home → signature card. Evidence per AC-ID → `/evidence/<AC-ID>/` (screenshots + command output). Screenshot naming: `route--state--width.png`.
+   342→   342→
+   343→   343→## 11. NEVER Rules (≤15 · each paired with ALWAYS · defect signature)
+   344→   344→
+   345→   345→1. NEVER fabricate listings, counters, testimonials, or metrics → ALWAYS real data or seed marked SAMPLE + swap path in CONTENT.md. *(Defect: fake trust — fatal in this market.)*
+   346→   346→2. NEVER render AI-generated imagery for a listed property (`is_ai:true` under `/listings/**` = build error) → ALWAYS real photos or «صورة العقار قادمة» motif placeholder. *(Defect: trust law violation.)*
+   347→   347→3. NEVER `letter-spacing` on Arabic → ALWAYS 0 + `word-spacing` if needed. *(Defect: broken letter joins — reads as foreign machine site.)*
+   348→   348→4. NEVER split Arabic text per-character for any effect → ALWAYS word/line-level only. *(Defect: disconnected glyphs.)*
+   349→   349→5. NEVER physical `left/right/margin-left` in new CSS → ALWAYS logical `inline-start/inline-end`. *(Defect: RTL mirroring bugs.)*
+   350→   350→6. NEVER show a price without date stamp AND «السعر بالليرة يُحدَّد يومياً» AND negotiable mark → ALWAYS the triple. NEVER a static SYP figure. *(Defect: published lie.)*
+   351→   351→7. NEVER raw `<img>` → ALWAYS `next/image` + `sizes` + dimensions. *(Defect: LCP/CLS blowout.)*
+   352→   352→8. NEVER runtime font CDN → ALWAYS `next/font` self-hosted subsets. *(Defect: Damascus latency + sanctions fragility.)*
+   353→   353→9. NEVER raw hex in JSX → ALWAYS `@theme` token classes. *(Defect: token contract rot.)*
+   354→   354→10. NEVER hardcode WhatsApp number/copy → ALWAYS env + `lib/wa.ts` builder. *(Defect: untraceable funnel.)*
+   355→   355→11. NEVER client-side `dir`/`lang` switching → ALWAYS server-set per route. *(Defect: mode flash + SEO.)*
+   356→   356→12. NEVER delete/hide sold listings → ALWAYS status flip → dated proof card in `/ar/sold`. *(Defect: trust archive destroyed.)*
+   357→   357→13. NEVER import gsap/lenis/three/video/WebGL in this brief → ALWAYS CSS transitions only. *(Defect: scope creep into M2.)*
+   358→   358→14. NEVER more than the 2 named GA4 events → ALWAYS `whatsapp_click` + `time_to_first_listing` only. *(Defect: instrumentation spam.)*
+   359→   359→15. NEVER stacked badges/fake urgency → ALWAYS ≤1 badge, real small numbers. *(Defect: fraud signal in a fraud-scarred market.)*
+   360→   360→
+   361→   361→## 12. Done Definition & ACK
+   362→   362→
+   363→   363→**DONE = all 28 AC PASS with evidence at `/evidence/<AC-ID>/`, re-runnable read-only by the reviewer.** No partial credit — "mostly done" = NOT-DONE; ship the blocker list instead. When all AC pass → STOP (gold-plating is a defect; reject unrequested extras). Deliver: verification matrix (AC-ID → check → expected → actual → PASS/FAIL → evidence path) + delivery report + cold-start handoff (README with verified commands, AGENTS.md, `.env.example`, migrations, CONTENT.md publish path) + one-paragraph architecture note.
+   364→   364→
+   365→   365→**Your FIRST output is an ACK (≤15 lines):** exact resolved versions of every §2 row · route count built · AC count accepted · inactive feature triggers you are NOT activating (payments/webhooks/realtime/video/WebGL/auth — list them) · the single line: "Zero clarifying questions — brief is self-contained." Then build T0.1→T1.12 in DAG order.
+   366→   366→
+   367→   367→**Terminal reminders (positional law — critical content repeats at the end):** Rule zero: never invent — unknowns → `ASSUMPTIONS.md` ≤5, blockers → BLOCKED report. Scope law: funnel only — cinema is a SEPARATE later brief. Trust law: AI never depicts a listed property; honest small numbers only. The funnel ships complete: every route, every state, every wa.me link, every gate.
+   368→   368→
+   369→   369→---
+   370→   370→
+   371→   371→### Appendix (compact) — shared constants (mirror of plan)
+   372→   372→
+   373→   373→Viewports 375/768/1440 · screenshots `route--state--width.png` · no horizontal scroll @375 · AC 3–8/feature binary with named checks · fix loop ≤3 rounds · task ≤5 files/3–7 AC/one commit · route JS ≤80KB gz · poster ≤60KB sole high-priority · LCP ≤2.5s · CLS ≤0.02 · INP ≤200ms · axe 0 critical+serious · contrast 4.5:1 body / 3:1 large+UI (light theme only, v1 ruling) · icons one family (Lucide) 16/20/24 one stroke rule · evidence `/evidence/<AC-ID>/` · NEVER registry ≤15 paired.
+   374→   374→
+   375→   375→**Content-source table (CONTENT.md law):** static copy = AUTHORED (§7 verbatim) · listings = SAMPLE (seed, swap pre-launch) · office identity = TO-OBTAIN (env slots, launch-blocking) · photography = deferred to owner (placeholder tiles until then).
+   376→   376→
+   377→   377→

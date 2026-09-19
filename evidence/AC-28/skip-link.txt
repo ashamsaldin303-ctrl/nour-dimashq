@@ -1,0 +1,1 @@
+"{\"firstTag\":\"A\",\"firstText\":\"تخطَّ إلى العقارات\",\"isSkipLink\":true,\"href\":\"#properties\"}"

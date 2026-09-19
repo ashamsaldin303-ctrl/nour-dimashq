@@ -1,0 +1,36 @@
+/ -> {
+  "cw": 375,
+  "sw": 375
+}
+/ar/listings -> {
+  "cw": 375,
+  "sw": 375
+}
+/ar/listings/apartment-mezze-apr-118 -> {
+  "cw": 375,
+  "sw": 375
+}
+/ar/valuation -> {
+  "cw": 375,
+  "sw": 375
+}
+/ar/verification -> {
+  "cw": 375,
+  "sw": 375
+}
+/ar/sold -> {
+  "cw": 375,
+  "sw": 375
+}
+/ar/about -> {
+  "cw": 375,
+  "sw": 375
+}
+/en -> {
+  "cw": 375,
+  "sw": 375
+}
+/nonexistent-page -> {
+  "cw": 375,
+  "sw": 375
+}

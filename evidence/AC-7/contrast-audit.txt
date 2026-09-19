@@ -1,0 +1,16 @@
+PAIR                               RATIO  FLOOR  VERDICT  WHERE
+stone-900 on stone-100             12.84    4.5   PASS     body text on page bg
+stone-900 on stone-50              14.05    4.5   PASS     body text on cards
+gold-600 on stone-100               5.48    4.5   PASS     accent text at body size (brief claims 4.6:1)
+gold-500 on stone-100               3.61      3   PASS     large text >=24px + UI lines (brief claims 3:1)
+stone-900 on gold-400               5.29      3   PASS     badge text on gold-400 (brief claims 5.4:1)
+stone-50 on gold-600                5.99    4.5   PASS     primary button text
+stone-50 on stone-900              14.05    4.5   PASS     dark panel text
+gold-300 on stone-900               7.78      3   PASS     on-dark accent
+stone-300 on stone-900              9.14      3   PASS     dark muted captions
+stone-700 on stone-100              6.10    4.5   PASS     secondary text
+ok-600 on ok-50                     5.23    4.5   PASS     success text
+bad-600 on bad-50                   5.49    4.5   PASS     danger text
+gold-600 on stone-200               4.85      3   PASS     focus ring on secondary surfaces
+
+ALL PAIRS PASS

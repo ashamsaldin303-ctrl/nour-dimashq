@@ -1,0 +1,9 @@
+=== AC-26: letter-spacing in app/ (Arabic law) ===
+0 hits ✓
+=== tracking-* utilities in source ===
+src/components/ui/menubar.tsx:205:        "text-muted-foreground ml-auto text-xs tracking-widest",
+src/components/ui/context-menu.tsx:228:        "text-muted-foreground ml-auto text-xs tracking-widest",
+src/components/ui/command.tsx:166:        "text-muted-foreground ml-auto text-xs tracking-widest",
+src/components/ui/alert.tsx:42:        "col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight",
+src/components/ui/dropdown-menu.tsx:187:        "text-muted-foreground ml-auto text-xs tracking-widest",
+HITS FOUND (FAIL)

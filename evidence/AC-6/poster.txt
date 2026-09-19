@@ -1,0 +1,8 @@
+=== AC-6: home poster + sole high-priority fetch ===
+poster bytes: 58750 (limit 60000)
+fetchpriority occurrences (case-insensitive, with values):
+      2 fetchPriority="high"
+      1 fetchPriority="low"
+case-sensitive grep -c fetchpriority: 0
+0
+note: dev HMR injects one fetchPriority=low script (prod-only artifact); the 2x high = img + its preload link (SAME single poster image)

@@ -1,0 +1,4 @@
+=== AC-24: is_ai:true under listings paths ===
+0 hits ✓
+=== seed media is_ai values ===
+35
