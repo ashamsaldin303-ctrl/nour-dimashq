@@ -123,3 +123,23 @@ Stage Summary:
 - Matrix: 25 PASS + 2 PASS(dev) + 1 SUBSTITUTED + 3 UNVERIFIED(prod-only) = 28/28 accounted, 0 FAIL. 11 defects found+fixed by the loop.
 - Deliverables: evidence/verification-matrix.md + evidence/DELIVERY.md + /evidence/* tree.
 - M1 FUNNEL COMPLETE. Termination contract honored: stopping — no gold-plating.
+
+---
+Task ID: T1.9
+Agent: Z.ai Code (main orchestrator)
+Task: Publish the entire project to a new public GitHub repository using the user-provided fine-grained PAT
+
+Work Log:
+- Verified local git state: branch `main`, 3 commits, 198 tracked files, clean working tree, .git 5.7MB.
+- Security audit BEFORE public push: (1) `.env` is tracked but contains NO real secrets — dev DATABASE_URL, SAMPLE WhatsApp number, commented-out optional integrations only; (2) grepped full HEAD tree for the user's actual token `github_pat_11CGR4*` → 0 matches; (3) `sk-`/`AKIA`/`github_pat` pattern matches in bun.lock/tool-results/upload are documentation substrings only, verified individually.
+- Authenticated to GitHub API with the PAT → account `ashamsaldin303-ctrl` (user id 295945913).
+- Created public repo via `POST /user/repos`: name `nour-dimashq`, description (AR) "نور دمشق — موقع عقاري إنتاجي ثنائي اللغة…", has_issues=true, auto_init=false → id 1377714572.
+- Added remote `origin` = https://x-access-token:<PAT>@github.com/ashamsaldin303-ctrl/nour-dimashq.git (token embedded in local .git/config for future pushes; never written into any tracked file).
+- `git push -u origin main` → `* [new branch] main -> main`, tracking set.
+- Post-push verification via API: repo public ✓, default_branch main ✓, all 3 commits present (88eea57/f6da3b0/cb483c8) ✓, root listing matches project tree (src/, prisma/, db/, docs/, evidence/, public/, scripts/, tests/, tool-results/, upload/, worklog.md, configs) ✓.
+
+Stage Summary:
+- Project live at https://github.com/ashamsaldin303-ctrl/nour-dimashq (public, main branch, full history).
+- `.env` intentionally kept tracked (no secrets — sample/dev values only) so the repo is runnable; `.env.example` also present.
+- No code changes made; this was a pure publication (DevOps) task on top of the completed M1 funnel.
+- Security note logged: PAT is embedded in local .git/config remote URL for seamless future pushes — user informed to revoke/rotate if the sandbox is shared.
