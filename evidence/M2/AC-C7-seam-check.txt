@@ -1,0 +1,1 @@
+seam violations: 0 — chain: K1.webp>K2.webp | K2.webp>K3.webp | K3.webp>K4.webp

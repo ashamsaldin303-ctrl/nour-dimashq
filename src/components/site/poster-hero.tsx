@@ -1,11 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { CinemaFilm } from "@/components/cinema/cinema-film";
 
 /**
  * PosterHero (brief §4 section ①): 16:9 poster (≤60KB, sole
  * fetchpriority="high" on the site — AC-6), H1 + subline + dual CTA.
  * Carries the M2 mounting hooks: id="film-prologue" data-cinema-slot="hero".
+ * M2 mount (integration brief §12): <CinemaFilm /> inside this section; the
+ * film takes the slot only via [data-cinema-active="on"] — this hero stays
+ * the no-JS / pre-activation / fail-closed rung.
  */
 export function PosterHero() {
   return (
@@ -27,7 +31,7 @@ export function PosterHero() {
         />
       </div>
 
-      <div className="mx-auto flex min-h-[480px] max-w-6xl flex-col justify-center px-4 py-16 md:min-h-[560px] md:px-8 md:py-24">
+      <div className="cinema-m1-content mx-auto flex min-h-[480px] max-w-6xl flex-col justify-center px-4 py-16 md:min-h-[560px] md:px-8 md:py-24">
         <h1 className="max-w-3xl text-h1 font-bold text-stone-900">
           بيوت دمشقية مختارة، بسنود موثّقة
         </h1>
@@ -49,6 +53,9 @@ export function PosterHero() {
           </Button>
         </div>
       </div>
+
+      {/* M2 cinema layer — dynamic mount (zero cinema JS in the initial bundle) */}
+      <CinemaFilm />
     </section>
   );
 }

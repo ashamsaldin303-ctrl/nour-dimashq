@@ -1,0 +1,5 @@
+9: *   (3) fastSeek() when present, currentTime fallback;
+144:    if (dt < 1 / ScrubVideoEngine.FPS) return; // commit threshold: 1/fps (~42 ms)
+145:    if (now - this.#lastSeek < 80) return; // throttle: last-seek-wins, ~80 ms
+147:    if (typeof v.fastSeek === "function") {
+148:      v.fastSeek(this.#target);

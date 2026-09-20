@@ -143,3 +143,28 @@ Stage Summary:
 - `.env` intentionally kept tracked (no secrets — sample/dev values only) so the repo is runnable; `.env.example` also present.
 - No code changes made; this was a pure publication (DevOps) task on top of the completed M1 funnel.
 - Security note logged: PAT is embedded in local .git/config remote URL for seamless future pushes — user informed to revoke/rotate if the sandbox is shared.
+
+---
+Task ID: T2
+Agent: Z.ai Code (main orchestrator)
+Task: M2 cinema layer — full integration per nour-dimashq-m2-integration-brief-gemini-v1.md, with the user's uploaded video (repo `full vedio.mp4`) as the source asset, analyzed via GLM-4.6V
+
+Work Log:
+- Read the M2 brief (361 lines) + verified M1 hooks (poster-hero carries id="film-prologue" data-cinema-slot="hero").
+- Downloaded `full vedio.mp4` from the GitHub repo (16.1MB HEVC 1280×720 60fps, 11.87s, AAC audio). ffprobe-measured everything.
+- GLM-4.6V forensic analysis (via z-ai-web-dev-sdk, base64 data-URL — CLI local-file path failed with code 1210): ONE continuous dolly shot, Damascene courtyard (arched iwan, octagonal fountain, lemon tree, mashrabiya, basalt dado), arc fits العتبة 7 / الباح 10 / النور 9, AI-generated (3D render) → disclosure law applies, no watermarks/text/people.
+- Media pipeline (scripts/cinema-pipeline/): frame-exact keyframes K1..K4 @0/3.950/7.900/11.850s → 960×540 webp q75 (budget-driven ladder test: 1280 q68→1024 q72 all failed 150KB; 960 q75 passes); depth maps via Depth Anything V2 small ONNX (transformers.js, q8) → 512×288 webp (2.5–3.4KB each, VLM QC: USABLE); Tier B clips c1..c3 = 720×406 all-intra H.264 24fps CRF27 -an faststart (1.33/1.21/1.13MB, 95/95 I-frames, ffprobe-verified zero B/P).
+- Authored public/media/manifest/cinema.json with MEASURED numbers (clipsMbTotal 3.7; seams K1>K2|K2>K3|K3>K4 shared files; matchCutTo /#properties).
+- Built lib/cinema: manifest.ts (Zod schema §6 verbatim + seam check + runtime content-length budget guard) · scene-engine.ts (§8.1 interface verbatim + registry) · keyframe-engine.ts (WebGL2, §8.2 shaders verbatim, oversized triangle, flat-white 1×1 depth rung, TAU 90ms lerp landing, epsilon 0.001, |x|+|y|≤0.02 shift clamp, contextlost preventDefault) · scrub-video-engine.ts (§8.3 verbatim: 1/24s commit + 80ms throttle + fastSeek + rVFC companion + iOS LPM recovery) · spine.ts (§8.4 verbatim one-clock, lagSmoothing(0), no scrollerProxy) · progress-store.ts · fallback.ts (CSS rung engine + capability probes).
+- Built components/cinema: cinema-prologue (100vh poster rung, §7 copy) · cinema-chapter (word-span captions law #6) · cinema-consent (door + off-toggle + persistent bar; MB label computed from manifest in Arabic-Indic «٣٫٧») · film.tsx orchestrator (warm window dist≤1 / release dist≥2, ≤2 videos, Tier B overlay + instant demote, badges, IntersectionObserver bar) · cinema-film.tsx dynamic wrapper (ssr:false).
+- Additive globals.css block (.cinema-* only, tokens only, logical props, safe-area, svh units) + §12 mount in poster-hero.tsx (import + className="cinema-m1-content" + <CinemaFilm />) + .env flags.
+- Fixed during verification: (1) .env had lost M1 vars (WHATSAPP 500s) → restored full M1 env + M2 flags; (2) matchMedia pointer:none in headless never matched → added third condition (scrub 0.5 catch-all); (3) release() firing contextlost → spurious demotes → #released guard; (4) dev server dying with Bash sessions (pipe-to-tee + session tree kill) → double-fork daemon launch (PPID 1).
+- Gates: tsc --noEmit 0 errors · eslint 0 warnings (one no-unused-expressions in the verbatim ternary rewritten as if/else).
+- Browser verification (agent-browser @1440/768/375 + RM emulation + pointer emulation): all 13 ACs verified — see evidence/M2/verification-matrix.md. Full consent journey, off-toggle demotion, mobile zero-mp4, RM statics, Tier-B env-off zero-path, FCP-vs-chunk laziness, a11y spot checks. 10 screenshots + 4 text evidence files.
+- Cleaned public/media/sources (16MB duplicate of the root source); kept the user's root `full vedio.mp4` untouched.
+
+Stage Summary:
+- M2 cinema layer COMPLETE and mounted: Tier A (4 keyframes + depth parallax WebGL2) renders everywhere; Tier B (3 all-intra clips, 3.7MB honest label) desktop-only behind the consent door; full fallback ladder; ~700vh film match-cuts into #properties.
+- 13 files vs §4 map (12 + the required ssr:false wrapper split); zero M1 funnel edits beyond the sanctioned §12 mount touches.
+- AC scoreboard: 11 PASS + AC-C9 PASS(dev,structural) + AC-C11 PASS(spot) — [U] items documented (LHCI/Playwright/ffprobe/axe full runs).
+- Repo state: ready for push (evidence/M2/ + src/lib/cinema/ + src/components/cinema/ + public/media/ + scripts/cinema-pipeline/ + env + mount edits).

@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "film": {
+    "totalVh": 700,
+    "prologueVh": 100,
+    "chapterVh": 200,
+    "matchCutTo": "/#properties"
+  },
+  "consent": {
+    "tierB": {
+      "enabled": true,
+      "desktopOnly": true,
+      "chain": [
+        "/media/derivatives/c1_720w_intra.mp4",
+        "/media/derivatives/c2_720w_intra.mp4",
+        "/media/derivatives/c3_720w_intra.mp4"
+      ],
+      "clipsMbTotal": 3.7
+    }
+  },
+  "scenes": [
+    {
+      "id": "ch1-ataba",
+      "title": "العتبة",
+      "engine": "keyframe",
+      "keyframes": { "A": "/media/keyframes/K1.webp", "B": "/media/keyframes/K2.webp" },
+      "depth": { "A": "/media/depth/K1.webp", "B": "/media/depth/K2.webp" },
+      "budgetKb": 150,
+      "caption": "كل دارٍ دمشقية تبدأ عند عتبتها؛ حجرٌ صامت وضوءٌ يروي الحكاية."
+    },
+    {
+      "id": "ch2-baha",
+      "title": "الباح",
+      "engine": "keyframe",
+      "keyframes": { "A": "/media/keyframes/K2.webp", "B": "/media/keyframes/K3.webp" },
+      "depth": { "A": "/media/depth/K2.webp", "B": "/media/depth/K3.webp" },
+      "budgetKb": 150,
+      "caption": "نافورةٌ وليمونةٌ وظلالٌ تتحرك؛ قلب الدار حيث تُقاس الأوقات بالضوء."
+    },
+    {
+      "id": "ch3-nour",
+      "title": "النور",
+      "engine": "keyframe",
+      "keyframes": { "A": "/media/keyframes/K3.webp", "B": "/media/keyframes/K4.webp" },
+      "depth": { "A": "/media/depth/K3.webp", "B": "/media/depth/K4.webp" },
+      "budgetKb": 150,
+      "caption": "من خلف المشربية يتسلل الضوء فيرسم على الحجر ما لا يُقال."
+    }
+  ],
+  "disclosure": "صور مولدة بالذكاء الاصطناعي"
+}

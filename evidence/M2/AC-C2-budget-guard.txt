@@ -1,0 +1,6 @@
+scene          A(B)        B(B)        depA(B)     depB(B)     total(KB)   budget  verdict
+ch1-ataba          78504       50346        3350        3262      132.3    150     PASS
+ch2-baha           50346       52990        3262        2490      106.5    150     PASS
+ch3-nour           52990       49490        2490        3014      105.5    150     PASS
+
+tierB clips: 1.33MB + 1.21MB + 1.12MB = 3.66MB | manifest clipsMbTotal=3.7 | MATCH
