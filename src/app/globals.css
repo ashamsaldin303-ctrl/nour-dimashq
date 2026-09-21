@@ -330,38 +330,45 @@
   }
 }
 
-/* --- chapters: pinned scrub surfaces (100vh + +=100% pin = 200vh scroll) --- */
-.chapter {
+/* --- the film: sticky stage + scroll runway (structure ON the video) --- */
+.cinema-runway {
   position: relative;
+  height: calc(var(--cinema-runway, 560) * 1vh);
+  height: calc(var(--cinema-runway, 560) * 1svh);
+}
+.cinema-stage {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   height: 100vh;
   height: 100svh;
-  overflow: hidden; /* clips the 1.06 push-in — no horizontal scroll (AC-C12) */
+  overflow: hidden; /* clips cover-crop overflow — no horizontal scroll (AC-C12) */
 }
-.cinema-media {
+.cinema-stage-media {
   position: absolute;
   inset: 0;
 }
-.cinema-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 16:9 backing store, undistorted on every viewport */
-}
-.cinema-rung {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-}
-.cinema-still {
+.cinema-stage-poster {
+  /* the same-frame poster: pre-video paint + the off/failure rung */
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.cinema-scrim {
+.cinema-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+.cinema-stage-media.is-live .cinema-video {
+  opacity: 1;
+}
+.cinema-stage-scrim {
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -371,11 +378,26 @@
     transparent 68%
   );
 }
-.cinema-chapter-copy {
+.cinema-captions {
   position: absolute;
   inset-inline: 0;
   bottom: 14%;
   padding-inline: clamp(16px, 6vw, 96px);
+}
+.cinema-caption {
+  position: absolute;
+  inset-inline: clamp(16px, 6vw, 96px);
+  bottom: 0;
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 520ms var(--ease-out),
+    transform 520ms var(--ease-out);
+  pointer-events: none;
+}
+.cinema-caption.is-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 .cinema-kicker {
   font-family: var(--font-heading);
@@ -401,10 +423,50 @@
 .cw {
   display: inline-block;
   margin-inline-end: 0.3em;
+  opacity: 0;
+  transform: translateY(110%);
+  transition:
+    opacity 480ms var(--ease-out),
+    transform 480ms var(--ease-out);
   will-change: transform;
+}
+.cinema-caption.is-in .cw {
+  opacity: 1;
+  transform: translateY(0);
 }
 .cw:last-child {
   margin-inline-end: 0;
+}
+
+/* --- statics rung (reduced-motion): the film told as a storyboard --- */
+.cinema-statics {
+  position: relative;
+}
+.cinema-statics-media {
+  position: relative;
+  height: 60vh;
+  height: 60svh;
+  overflow: hidden;
+}
+.cinema-statics-list {
+  display: grid;
+  gap: 24px;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 48px clamp(16px, 6vw, 96px) 64px;
+}
+.cinema-statics .cinema-kicker {
+  color: var(--color-gold-600); /* on the light page background, not the scrim */
+}
+.cinema-static-text {
+  margin-top: 8px;
+  max-width: 44rem;
+  font-family: var(--font-body);
+  font-size: var(--text-lead);
+  line-height: var(--text-lead--line-height);
+  font-weight: 500;
+  color: var(--color-stone-800);
+  text-wrap: pretty;
 }
 
 /* --- match-cut: the film hands the visitor to the funnel --- */

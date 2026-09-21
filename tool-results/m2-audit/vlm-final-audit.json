@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "**Evaluation:**\n\nA) **Structure Coherence:** The page follows the requested top-to-bottom structure logically. It includes the poster prologue (\"نور دمشق\"), a prominent video section of a courtyard, a link panel, trust indicators, property cards, a dark verification panel, and a footer. There are no obviously broken or overlapping sections.\n\nB) **Video Orientation:** The courtyard video/image is displayed **right-side-up**. The arches, fountain, and tree are correctly oriented with gravity (the tree grows upwards, the water is at the bottom).\n\nC) **Layout Defects:** \n- **Major Issue:** The \"Match-cut link panel\" (Section 3) appears to be almost entirely empty or has extremely low contrast, showing only faint geometric patterns on a light background with very little visible text or content.\n- **Minor Issue:** The property cards in Section 5 are missing their main thumbnail images, showing only placeholders or blank space where photos should be.\n- Text alignment for the Arabic RTL content appears correct.\n\n**Score: 6/10**\n(Deducted points for the empty/missing content in the link panel and the missing images in the property grid).",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789949539,
+  "id": "2026092108120596949ccec6da4c92",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026092108120596949ccec6da4c92",
+  "usage": {
+    "completion_tokens": 243,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 5546,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 5789
+  }
+}

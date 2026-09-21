@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Based on the image provided, here are the answers to your questions:\n\n1.  **Orientation:** The video is **right side up** (correctly oriented). The architectural elements and text are upright.\n2.  **Text Readability:** Yes, the Arabic caption text is **readable and properly rendered**.\n3.  **Visual Defects:** There is a significant visual defect: the background video is **extremely overexposed (washed out)**, making it difficult to clearly see the specific details of the courtyard, the fountain, or the lemon tree as requested. Additionally, there is a faint grid of square outlines overlaid on the entire image.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789949360,
+  "id": "2026092108091211267183fbe84339",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026092108091211267183fbe84339",
+  "usage": {
+    "completion_tokens": 137,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1772,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1909
+  }
+}

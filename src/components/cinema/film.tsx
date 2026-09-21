@@ -2,37 +2,44 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowDown } from "lucide-react";
 import {
   loadCinemaManifest,
-  checkSceneBudgets,
+  checkFilmBytes,
+  type CinemaCaption,
   type CinemaManifest,
 } from "@/lib/cinema/manifest";
-import { KeyframeEngine } from "@/lib/cinema/keyframe-engine";
-import { ScrubVideoEngine } from "@/lib/cinema/scrub-video-engine";
-import { CssKeyframeEngine, webgl2Supported, isDesktopViewport, prefersReducedMotion } from "@/lib/cinema/fallback";
-import { initSpine, disposeSpine, refreshAfterFonts, gsap } from "@/lib/cinema/spine";
-import { ProgressStore, computeShift } from "@/lib/cinema/progress-store";
+import { FilmScrubEngine } from "@/lib/cinema/film-scrub-engine";
+import { isDesktopViewport, prefersReducedMotion, saveDataOn } from "@/lib/cinema/fallback";
+import { initSpine, disposeSpine, refreshAfterFonts, gsap, ScrollTrigger } from "@/lib/cinema/spine";
+import { arDigits } from "@/lib/format";
 import { CinemaPrologue } from "./cinema-prologue";
-import { CinemaChapter } from "./cinema-chapter";
 import { CinemaBar } from "./cinema-consent";
 
 /**
- * M2 cinema layer — the orchestrator (§4): consent -> spine -> engines ->
- * match-cut. Mounted inside the M1 hero slot ([data-cinema-slot="hero"]) via
- * the dynamic wrapper (zero cinema JS in the initial M1 bundle, AC-C9).
+ * M2 cinema layer v2 — the full-film orchestrator (T2.1 rework).
  *
- * Tier law: Tier A (keyframes + depth, zero video bytes) renders everywhere;
- * Tier B (three 720w all-intra clips) is desktop-only, behind the consent
- * door, demotable by env flag or the off-toggle. The M1 hero beneath stays
- * intact for no-JS, failure, and pre-activation states — fail-closed, never
- * broken.
+ * THE RULING (user, verbatim intent): «تناسب الهيكلية الكاملة للموقع على
+ * الفيديو بشكل كامل، وليس الفيديو على الهيكلية» — the site's structure is
+ * built AROUND the video. One continuous H.264 film is the sticky stage; the
+ * scroll runway scrubs its timeline 0→duration; the captions (العتبة/الباح/
+ * النور) are time-windowed overlays ON the film; the match-cut hands over to
+ * the funnel. No keyframe stills, no WebGL rung, no clipped chapter chain.
+ *
+ * Ladder: reduced-motion → statics (poster + captions in flow, zero JS
+ * motion) · consent off / failure → poster rung (sticky stage, poster still,
+ * zero video bytes) · desktop → film auto-on (the cinema IS the site) ·
+ * touch / Save-Data → honest-MB door first. Fail-closed: the M1 hero
+ * beneath stays intact for no-JS, boot, error, and off states.
  */
 
 type Phase = "boot" | "off" | "error" | "statics" | "animated";
 type Consent = "undecided" | "on" | "off";
 
-const STORAGE_KEY = "nour-dimashq:cinema-tierb";
+const STORAGE_KEY = "nour-dimashq:cinema";
+/** T2 Tier-B key — honored as a migration signal, never written again. */
+const LEGACY_STORAGE_KEY = "nour-dimashq:cinema-tierb";
 
 /* §7 copy — verbatim, v1 (pending owner approval). */
 const PROLOGUE_TITLE = "نور دمشق";
@@ -40,53 +47,80 @@ const PROLOGUE_SUB = "وسيطٌ عقاري دمشقي يعمل كفيلم — �
 const PROLOGUE_CUE = "تابع النزول";
 const MATCHCUT_LINE = "وهنا تبدأ الحكاية التالية — بيوتٌ حقيقية بانتظارك.";
 
-const TIER_B_ENV = process.env.NEXT_PUBLIC_CINEMA_TIER_B === "true";
+const CINEMA_ENABLED = process.env.NEXT_PUBLIC_CINEMA_ENABLED === "true";
+
+/** Caption overlay — words pre-split at build time (Arabic shaping law). */
+function CaptionOverlay({ caption }: { caption: CinemaCaption }) {
+  const words = caption.text.split(" ").filter(Boolean);
+  return (
+    <div className="cinema-caption" data-caption-id={caption.id}>
+      <h2 className="cinema-kicker">
+        <bdi className="num">{arDigits(`0${caption.index}`)}</bdi>
+        <span className="cinema-kicker-sep" aria-hidden="true">
+          —
+        </span>
+        {caption.title}
+      </h2>
+      <p className="cinema-lede">
+        {words.map((w, i) => (
+          <span
+            key={i}
+            className="cw"
+            style={{ transitionDelay: `${Math.min(i * 70, 560)}ms` }}
+          >
+            {w}
+          </span>
+        ))}
+      </p>
+    </div>
+  );
+}
 
 export function Film() {
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const [phase, setPhase] = useState<Phase>("boot");
+  const runwayRef = useRef<HTMLDivElement | null>(null);
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const [phase, setPhase] = useState<Phase>(CINEMA_ENABLED ? "boot" : "off");
   const [manifest, setManifest] = useState<CinemaManifest | null>(null);
   const [consent, setConsent] = useState<Consent>("undecided");
   const [desktop, setDesktop] = useState(false);
   const [barVisible, setBarVisible] = useState(false);
   const [videoOn, setVideoOn] = useState(false);
 
-  /* Engine machinery refs — one machine, re-configured in place. */
-  const mediaElsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const enginesRef = useRef<(KeyframeEngine | CssKeyframeEngine)[]>([]);
-  const videoRef = useRef<(ScrubVideoEngine | null)[]>([]);
-  const warmedRef = useRef<Set<number>>(new Set());
-  const activeChapterRef = useRef(0);
-  const pointerRef = useRef<[number, number]>([0, 0]);
   const consentRef = useRef<Consent>("undecided");
-  const badgesRef = useRef({ tierA: false, gated: false, video: false });
-  const activateVideoTierRef = useRef<((on: boolean) => void) | null>(null);
+  const desktopRef = useRef(false);
+  const activateRef = useRef<((on: boolean) => void) | null>(null);
+  const liveBadgeRef = useRef(false);
 
   /* ------------------------------------------------------------------ boot */
   useEffect(() => {
+    if (!CINEMA_ENABLED) return; // phase is already "off" from initial state
     let alive = true;
-    if (process.env.NEXT_PUBLIC_CINEMA_ENABLED !== "true") {
-      setPhase("off");
-      return;
-    }
-    try {
-      const saved = window.localStorage.getItem(STORAGE_KEY);
-      if (saved === "on" || saved === "off") {
-        setConsent(saved);
-        consentRef.current = saved;
-      }
-    } catch {
-      /* private mode — treat as undecided */
-    }
     void (async () => {
+      /* consent restore (async context — localStorage may throw in private mode) */
+      try {
+        const saved = window.localStorage.getItem(STORAGE_KEY);
+        const legacy = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+        const restored: Consent | null =
+          saved === "on" || saved === "off"
+            ? saved
+            : legacy === "on" || legacy === "off"
+              ? legacy
+              : null;
+        if (restored) {
+          consentRef.current = restored;
+          setConsent(restored);
+        }
+      } catch {
+        /* private mode — treat as undecided */
+      }
       try {
         const m = await loadCinemaManifest();
-        await checkSceneBudgets(m); // runtime byte guard (§6)
+        await checkFilmBytes(m); // honest-MB guard (HEAD only, zero video bytes)
         if (!alive) return;
         setManifest(m);
         if (prefersReducedMotion()) {
-          // reduced-motion ladder rung: keyframe stills, no rAF loop (AC-C6)
-          setPhase("statics");
+          setPhase("statics"); // reduced-motion rung: no engine, no rAF (AC-C6)
           console.info("cinema:static");
           return;
         }
@@ -101,9 +135,13 @@ export function Film() {
     };
   }, []);
 
-  /* --------------------------------------------------- desktop viewport (AC-C5) */
+  /* --------------------------------------------------- desktop viewport (door law) */
   useEffect(() => {
-    const update = () => setDesktop(isDesktopViewport());
+    const update = () => {
+      const d = isDesktopViewport();
+      desktopRef.current = d;
+      setDesktop(d);
+    };
     update();
     window.addEventListener("resize", update, { passive: true });
     return () => window.removeEventListener("resize", update);
@@ -127,261 +165,103 @@ export function Film() {
     };
   }, [phase]);
 
-  /* --------------------------------------------------- the animated machine */
+  /* ------------------------------------------- the animated machine (one film) */
   useEffect(() => {
     if (phase !== "animated" || !manifest) return;
     const root = rootRef.current;
-    if (!root) return;
-    const scenes = manifest.scenes;
-    const store = new ProgressStore();
-    const lenis = initSpine();
-    const useGL = webgl2Supported();
-    const tierBEligible = () =>
-      TIER_B_ENV && manifest.consent.tierB.enabled && isDesktopViewport() && !prefersReducedMotion();
+    const runway = runwayRef.current;
+    const host = hostRef.current;
+    if (!root || !runway || !host) return;
 
-    const fireTierABadge = () => {
-      if (!badgesRef.current.tierA) {
-        badgesRef.current.tierA = true;
-        console.info("cinema:tierA ok");
-      }
-    };
+    const lenis = initSpine(); // the ONE clock (Lenis + ScrollTrigger + engine)
+    const durationSec = manifest.film.durationSec;
+    const captionEls = manifest.captions.map((c) =>
+      root.querySelector<HTMLElement>(`[data-caption-id="${c.id}"]`),
+    );
 
-    const buildCssEngine = (j: number): CssKeyframeEngine => {
-      const hostEl = mediaElsRef.current[j];
-      const scene = scenes[j]!;
-      return new CssKeyframeEngine({
-        host: hostEl!,
-        colorAUrl: scene.keyframes.A,
-        colorBUrl: scene.keyframes.B,
+    let engine: FilmScrubEngine | null = null;
+
+    const startVideo = (): void => {
+      if (engine || consentRef.current !== "on") return;
+      engine = new FilmScrubEngine({
+        host,
+        videoUrl: manifest.film.src,
+        posterUrl: manifest.film.poster,
+        onFirstFrame: () => {
+          host.classList.add("is-live"); // CSS fades the film over the poster
+          setVideoOn(true);
+          if (!liveBadgeRef.current) {
+            liveBadgeRef.current = true;
+            console.info("cinema:film live");
+          }
+        },
+        onFatal: (err) => {
+          console.warn(
+            "cinema:film demoted to poster rung —",
+            err instanceof Error ? err.message : String(err),
+          );
+          stopVideo();
+        },
       });
+      engine.warmUp().catch(() => stopVideo());
     };
 
-    /** One engine failed (warm/compile) -> CSS rung for that chapter. */
-    const demoteChapterToCss = (j: number, why: unknown): void => {
-      console.warn(`cinema: chapter ${j + 1} -> CSS rung (${why instanceof Error ? why.message : String(why)})`);
-      enginesRef.current[j]?.release();
-      warmedRef.current.delete(j);
-      const css = buildCssEngine(j);
-      enginesRef.current[j] = css;
-      warmedRef.current.add(j);
-      void css
-        .warmUp()
-        .then(() => {
-          css.resume();
-          fireTierABadge();
-        })
-        .catch(() => undefined);
-    };
-
-    /* engines: WebGL2 keyframes (or CSS rung when GL is unavailable) */
-    enginesRef.current = scenes.map((scene, j) => {
-      const hostEl = mediaElsRef.current[j];
-      if (!hostEl) return new CssKeyframeEngine({ host: root, colorAUrl: scene.keyframes.A, colorBUrl: scene.keyframes.B });
-      if (useGL) {
-        return new KeyframeEngine({
-          host: hostEl,
-          colorAUrl: scene.keyframes.A,
-          colorBUrl: scene.keyframes.B,
-          depthAUrl: scene.depth?.A,
-          depthBUrl: scene.depth?.B,
-          onFirstDraw: fireTierABadge,
-          onContextLost: () => demoteChapterToCss(j, new Error("webglcontextlost")),
-        });
-      }
-      return new CssKeyframeEngine({ host: hostEl, colorAUrl: scene.keyframes.A, colorBUrl: scene.keyframes.B });
-    });
-
-    /** Warm/suspend/release window around the active chapter (§8.1 laws). */
-    const applyWarmWindow = (active: number): void => {
-      const wantVideo = consentRef.current === "on" && tierBEligible();
-      for (let j = 0; j < scenes.length; j++) {
-        const dist = Math.abs(j - active);
-        const engine = enginesRef.current[j];
-        const video = videoRef.current[j];
-        if (dist <= 1) {
-          if (video && !video.isSuspended) {
-            engine?.suspend(); // Tier B is the surface; keyframes stay warm beneath
-          } else if (engine) {
-            engine.resume();
-            if (!warmedRef.current.has(j)) {
-              warmedRef.current.add(j);
-              void engine
-                .warmUp()
-                .then(() => {
-                  engine.resume();
-                  fireTierABadge();
-                })
-                .catch((err: unknown) => demoteChapterToCss(j, err));
-            }
-          }
-        } else {
-          engine?.suspend();
-          if (dist >= 2) {
-            // 2+ chapters away: free VRAM/decoders (§8.1 release law)
-            engine?.release();
-            warmedRef.current.delete(j);
-          }
-        }
-        /* Tier B window: <= 2 warm videos at any moment (structural: dist<=1) */
-        if (wantVideo && dist <= 1 && !videoRef.current[j] && manifest.consent.tierB.chain[j]) {
-          const hostEl = mediaElsRef.current[j];
-          const clip = manifest.consent.tierB.chain[j]!;
-          if (hostEl) {
-            const ve = new ScrubVideoEngine({
-              host: hostEl,
-              clipUrl: clip,
-              onFatal: () => {
-                videoRef.current[j]?.release();
-                videoRef.current[j] = null;
-                enginesRef.current[j]?.resume();
-              },
-            });
-            videoRef.current[j] = ve;
-            void ve
-              .warmUp()
-              .then(() => {
-                ve.resume();
-                enginesRef.current[j]?.suspend();
-                setVideoOn(true);
-                if (!badgesRef.current.video) {
-                  badgesRef.current.video = true;
-                  console.info("cinema:tierB on");
-                }
-              })
-              .catch(() => {
-                videoRef.current[j] = null;
-                enginesRef.current[j]?.resume();
-              });
-          }
-        } else if (videoRef.current[j] && dist >= 2) {
-          videoRef.current[j]!.release();
-          videoRef.current[j] = null;
-        }
-      }
-    };
-
-    const releaseAllVideos = (): void => {
-      for (let j = 0; j < videoRef.current.length; j++) {
-        videoRef.current[j]?.release();
-        videoRef.current[j] = null;
-      }
-      for (const e of enginesRef.current) e?.resume();
+    const stopVideo = (): void => {
+      engine?.release();
+      engine = null;
+      host.classList.remove("is-live");
       setVideoOn(false);
     };
 
-    activateVideoTierRef.current = (on: boolean) => {
-      if (on) applyWarmWindow(activeChapterRef.current);
-      else releaseAllVideos();
+    activateRef.current = (on: boolean) => {
+      if (on) startVideo();
+      else stopVideo();
     };
 
-    /* Timelines: pinned chapter scrub, one clock, matchMedia variants.
-       The third condition is the catch-all: environments reporting
-       `pointer: none` (headless/AT) must still get the pinned film —
-       scrub falls to the gentler touch value there. */
-    const chapterEls = scenes.map((_, i) => root.querySelector<HTMLElement>(`.chapter-${i + 1}`));
-    const mm = gsap.matchMedia();
-    mm.add(
-      { fine: "(pointer: fine)", coarse: "(pointer: coarse)", none: "(pointer: none)" },
-      (ctx) => {
-        const scrub = ctx.conditions?.fine ? 0.9 : 0.5; // wheel 0.8–1 · touch ~0.5
-        const tls = chapterEls.map((el, i) => {
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: el!,
-              start: "top top",
-              end: "+=100%", // 1 viewport-height of pinned scrub (film math §8.4)
-              pin: true, // never animate the pinned element itself — children only
-              pinSpacing: true,
-              anticipatePin: 1, // pre-unpins 1 tick: no flash on fast scroll
-              invalidateOnRefresh: true,
-              scrub,
-              onUpdate: (self) => {
-                store.setChapter(i, self.progress);
-                enginesRef.current[i]?.setProgress(self.progress);
-                videoRef.current[i]?.setProgress(self.progress);
-              },
-            },
-          });
-          const mediaEl = el?.querySelector(".media");
-          const words = el?.querySelectorAll(".cw");
-          const lede = el?.querySelector(".lede");
-          if (mediaEl) tl.fromTo(mediaEl, { scale: 1.06 }, { scale: 1.0, ease: "none" }, 0);
-          if (words && words.length > 0) {
-            tl.from(words, { yPercent: 120, stagger: 0.08, ease: "power2.out" }, 0.1);
-          }
-          if (lede) tl.to(lede, { autoAlpha: 0, y: -40 }, 0.75);
-          return tl;
-        });
-        return () => {
-          for (const t of tls) {
-            t.scrollTrigger?.kill();
-            t.kill();
-          }
-        };
+    /* The scrub timeline: runway progress → film time + caption windows.
+       Sticky owns the pin (no ScrollTrigger pin spacer) — the stage holds
+       while the runway scrolls; captions are deterministic window toggles,
+       fully reversible in both scroll directions. */
+    const st = ScrollTrigger.create({
+      trigger: runway,
+      start: "top top",
+      end: "bottom bottom",
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const p = self.progress;
+        engine?.setProgress(p);
+        const t = p * durationSec;
+        for (let i = 0; i < manifest.captions.length; i++) {
+          const c = manifest.captions[i]!;
+          captionEls[i]?.classList.toggle("is-in", t >= c.fromSec && t <= c.toSec);
+        }
       },
-    );
+    });
 
-    /* The ONE ticker: engines tick from the same clock as Lenis (§8.4). */
     const onTick = (time: number, deltaTime: number): void => {
-      const dt = Math.min(Math.max(deltaTime / 1000, 0.0001), 0.25);
-      const shift = computeShift(lenis.velocity ?? 0, pointerRef.current);
-      const active = activeChapterRef.current;
-      for (let j = 0; j < scenes.length; j++) {
-        if (Math.abs(j - active) > 1) continue;
-        enginesRef.current[j]?.tick(time * 1000, dt, shift);
-        videoRef.current[j]?.tick(time * 1000);
-      }
+      engine?.tick(time * 1000, deltaTime / 1000);
     };
     gsap.ticker.add(onTick);
 
-    /* Pointer parallax feed (desktop only, |x|+|y| <= 0.02 law in computeShift). */
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    const onPointer = (e: PointerEvent): void => {
-      pointerRef.current = [
-        e.clientX / window.innerWidth - 0.5,
-        e.clientY / window.innerHeight - 0.5,
-      ];
-    };
-    if (finePointer) {
-      window.addEventListener("pointermove", onPointer, { passive: true });
-    }
-
-    /* AC-C5: demote Tier B if the viewport stops being desktop. */
-    const onResizeDemote = (): void => {
-      if (!isDesktopViewport() && videoRef.current.some(Boolean)) {
-        releaseAllVideos();
-      }
-    };
-    window.addEventListener("resize", onResizeDemote, { passive: true });
-
-    /* Warm the first window (chapter 0 + 1). */
-    applyWarmWindow(0);
-
-    /* Chapter tracking drives the warm window. */
-    const unsubscribe = store.subscribe((s) => {
-      if (s.chapter !== activeChapterRef.current) {
-        activeChapterRef.current = s.chapter;
-        applyWarmWindow(s.chapter);
-      }
-    });
-
-    refreshAfterFonts(); // Cairo/Kufi load -> re-measure triggers
+    refreshAfterFonts(); // Cairo/Kufi load → re-measure triggers
 
     return () => {
-      unsubscribe();
-      window.removeEventListener("pointermove", onPointer);
-      window.removeEventListener("resize", onResizeDemote);
       gsap.ticker.remove(onTick);
-      mm.revert();
-      for (const v of videoRef.current) v?.release();
-      videoRef.current = [];
-      for (const e of enginesRef.current) e?.release();
-      enginesRef.current = [];
-      warmedRef.current.clear();
-      activateVideoTierRef.current = null;
+      st.kill();
+      engine?.release();
+      engine = null;
+      activateRef.current = null;
       disposeSpine();
     };
   }, [phase, manifest]);
+
+  /* --------------------------- auto-start law: desktop default is the film */
+  useEffect(() => {
+    if (phase !== "animated" || !manifest) return;
+    const auto =
+      consent === "on" || (consent === "undecided" && desktop && !saveDataOn());
+    if (auto) activateRef.current?.(true);
+  }, [phase, manifest, consent, desktop]);
 
   /* ------------------------------------------------------------ consent UX */
   const decide = (accept: boolean): void => {
@@ -393,22 +273,13 @@ export function Film() {
     } catch {
       /* persistence unavailable — runtime choice only */
     }
-    activateVideoTierRef.current?.(accept);
+    activateRef.current?.(accept);
   };
 
+  /* Door law: offered ONLY where the bytes are the user's to spend —
+     touch/small viewport, or Save-Data anywhere. Desktop default: auto-on. */
   const doorOpen =
-    phase === "animated" &&
-    !!manifest?.consent.tierB.enabled &&
-    TIER_B_ENV &&
-    consent === "undecided" &&
-    desktop;
-
-  useEffect(() => {
-    if (doorOpen && !badgesRef.current.gated) {
-      badgesRef.current.gated = true;
-      console.info("cinema:tierB gated");
-    }
-  }, [doorOpen]);
+    phase === "animated" && !!manifest && consent === "undecided" && (!desktop || saveDataOn());
 
   /* -------------------------------------------------------------- render */
   if (phase === "boot" || phase === "off" || phase === "error" || !manifest) {
@@ -418,18 +289,65 @@ export function Film() {
   return (
     <div className="cinema-root" ref={rootRef}>
       <CinemaPrologue title={PROLOGUE_TITLE} sub={PROLOGUE_SUB} cue={PROLOGUE_CUE} />
-      {manifest.scenes.map((scene, i) => (
-        <CinemaChapter
-          key={scene.id}
-          index={i}
-          title={scene.title}
-          caption={scene.caption}
-          stillUrl={phase === "statics" ? scene.keyframes.A : undefined}
-          mediaRef={(el) => {
-            mediaElsRef.current[i] = el;
-          }}
-        />
-      ))}
+      {phase === "statics" ? (
+        /* reduced-motion rung: the film told as a static storyboard */
+        <section className="cinema-statics" aria-label="فيلم نور دمشق">
+          <div className="cinema-statics-media">
+            <Image
+              src={manifest.film.poster}
+              alt=""
+              fill
+              sizes="100vw"
+              loading="lazy"
+              className="object-cover"
+            />
+            <div className="cinema-stage-scrim" aria-hidden="true" />
+          </div>
+          <div className="cinema-statics-list">
+            {manifest.captions.map((c) => (
+              <div key={c.id} className="cinema-static">
+                <h2 className="cinema-kicker">
+                  <bdi className="num">{arDigits(`0${c.index}`)}</bdi>
+                  <span className="cinema-kicker-sep" aria-hidden="true">
+                    —
+                  </span>
+                  {c.title}
+                </h2>
+                <p className="cinema-static-text">{c.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        /* the full film: sticky stage + scroll runway (structure ON video) */
+        <div
+          className="cinema-runway"
+          ref={runwayRef}
+          style={{ "--cinema-runway": manifest.film.runwayVh } as React.CSSProperties}
+        >
+          <div className="cinema-stage" role="region" aria-label="فيلم نور دمشق — دارٌ دمشقية">
+            <div className="cinema-stage-media" ref={hostRef}>
+              <Image
+                src={manifest.film.poster}
+                alt=""
+                fill
+                sizes="100vw"
+                loading="lazy"
+                className="cinema-stage-poster object-cover"
+              />
+              {/* FilmScrubEngine mounts <video class="cinema-video"> here —
+                  faded in over this same-frame poster only when frame 0 is
+                  decoded (is-live), so the first paint is never a flash. */}
+            </div>
+            <div className="cinema-stage-scrim" aria-hidden="true" />
+            <div className="cinema-captions">
+              {manifest.captions.map((c) => (
+                <CaptionOverlay key={c.id} caption={c} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       {/* match-cut: the film hands the visitor to the funnel (§1/§7) */}
       <div className="cinema-matchcut">
         <Link href={manifest.film.matchCutTo} className="cinema-matchcut-link">
@@ -441,7 +359,7 @@ export function Film() {
         visible={barVisible}
         disclosure={manifest.disclosure}
         doorOpen={doorOpen}
-        mbTotal={manifest.consent.tierB.clipsMbTotal}
+        mbTotal={manifest.film.sizeMb}
         onAccept={() => decide(true)}
         onDecline={() => decide(false)}
         videoOn={videoOn}

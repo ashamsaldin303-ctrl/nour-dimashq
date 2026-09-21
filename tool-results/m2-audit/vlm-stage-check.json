@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "**Image 1:**\n1. Yes, the video is right-side-up.\n2. Yes, the caption is readable.\n3. Yes, it looks like a real video frame.\n\n**Image 2:**\n1. Yes, the video is right-side-up.\n2. Yes, the caption is readable.\n3. Yes, it looks like a real video frame.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789949378,
+  "id": "20260921080935cd4b10016b6c4f40",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260921080935cd4b10016b6c4f40",
+  "usage": {
+    "completion_tokens": 77,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3453,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 3530
+  }
+}

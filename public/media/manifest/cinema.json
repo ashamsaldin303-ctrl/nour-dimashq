@@ -1,50 +1,37 @@
 {
-  "version": 1,
+  "version": 2,
   "film": {
-    "totalVh": 700,
-    "prologueVh": 100,
-    "chapterVh": 200,
+    "src": "/media/film/film.mp4",
+    "poster": "/media/film/poster.webp",
+    "durationSec": 11.867,
+    "sizeMb": 4.35,
+    "runwayVh": 560,
     "matchCutTo": "/#properties"
   },
-  "consent": {
-    "tierB": {
-      "enabled": true,
-      "desktopOnly": true,
-      "chain": [
-        "/media/derivatives/c1_720w_intra.mp4",
-        "/media/derivatives/c2_720w_intra.mp4",
-        "/media/derivatives/c3_720w_intra.mp4"
-      ],
-      "clipsMbTotal": 3.7
-    }
-  },
-  "scenes": [
+  "captions": [
     {
-      "id": "ch1-ataba",
+      "id": "ataba",
+      "index": 1,
       "title": "العتبة",
-      "engine": "keyframe",
-      "keyframes": { "A": "/media/keyframes/K1.webp", "B": "/media/keyframes/K2.webp" },
-      "depth": { "A": "/media/depth/K1.webp", "B": "/media/depth/K2.webp" },
-      "budgetKb": 150,
-      "caption": "كل دارٍ دمشقية تبدأ عند عتبتها؛ حجرٌ صامت وضوءٌ يروي الحكاية."
+      "text": "كل دارٍ دمشقية تبدأ عند عتبتها؛ حجرٌ صامت وضوءٌ يروي الحكاية.",
+      "fromSec": 0.3,
+      "toSec": 3.7
     },
     {
-      "id": "ch2-baha",
+      "id": "baha",
+      "index": 2,
       "title": "الباح",
-      "engine": "keyframe",
-      "keyframes": { "A": "/media/keyframes/K2.webp", "B": "/media/keyframes/K3.webp" },
-      "depth": { "A": "/media/depth/K2.webp", "B": "/media/depth/K3.webp" },
-      "budgetKb": 150,
-      "caption": "نافورةٌ وليمونةٌ وظلالٌ تتحرك؛ قلب الدار حيث تُقاس الأوقات بالضوء."
+      "text": "نافورةٌ وليمونةٌ وظلالٌ تتحرك؛ قلب الدار حيث تُقاس الأوقات بالضوء.",
+      "fromSec": 4.0,
+      "toSec": 7.7
     },
     {
-      "id": "ch3-nour",
+      "id": "nour",
+      "index": 3,
       "title": "النور",
-      "engine": "keyframe",
-      "keyframes": { "A": "/media/keyframes/K3.webp", "B": "/media/keyframes/K4.webp" },
-      "depth": { "A": "/media/depth/K3.webp", "B": "/media/depth/K4.webp" },
-      "budgetKb": 150,
-      "caption": "من خلف المشربية يتسلل الضوء فيرسم على الحجر ما لا يُقال."
+      "text": "من خلف المشربية يتسلل الضوء فيرسم على الحجر ما لا يُقال.",
+      "fromSec": 8.1,
+      "toSec": 11.6
     }
   ],
   "disclosure": "صور مولدة بالذكاء الاصطناعي"

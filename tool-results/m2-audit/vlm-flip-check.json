@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "**Question 1:** The image is **upside-down (vertically flipped)**. The fountain and floor are at the top, while the ceiling, skylight, and light source are at the bottom.\n\n**Question 2:** The image is inverted. Additionally, there is a large dark banner obscuring the middle of the scene, and some areas appear hazy or dusty.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789947941,
+  "id": "20260921074536721e32305fbc41ba",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260921074536721e32305fbc41ba",
+  "usage": {
+    "completion_tokens": 79,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1758,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1837
+  }
+}

@@ -4,20 +4,21 @@ import { Button } from "@/components/ui/button";
 import { arDigits } from "@/lib/format";
 
 /**
- * M2 cinema layer — the consent door + the persistent film bar (§3/§7).
+ * M2 cinema layer v2 — the consent door + the persistent film bar (§3/§7).
  *
  * Laws honored here:
  *  - NEVER #9 / AC-C4: the MB label is COMPUTED from manifest
- *    `consent.tierB.clipsMbTotal` in Arabic-Indic numerals — no typed literal.
+ *    `film.sizeMb` in Arabic-Indic numerals — no typed literal.
  *  - AC-C13: the AI disclosure badge is visible on BOTH the film (bar) and
  *    the door (chip inside the card) — always.
- *  - AC-C5: the door never renders on touch / pointer:coarse / <1024
- *    (the orchestrator gates it behind isDesktopViewport()).
+ *  - Door law (T2.1): desktop auto-runs the film (the cinema IS the site);
+ *    the door appears ONLY where the bytes are the user's to spend —
+ *    touch/small viewport or Save-Data.
  *  - a11y (AC-C11): a labelled region, real buttons, visible focus, and a
  *    scrim-safe text container — no modal focus-trap games.
  */
 
-/** 3.7 -> "٣٫٧" (Arabic-Indic digits + Arabic decimal separator). */
+/** Honest MB label: 4.35 -> "٤٫٤" (Arabic-Indic digits + decimal sep). */
 export function formatMbArabic(mb: number): string {
   return arDigits(mb.toFixed(1).replace(".", "٫"));
 }
@@ -82,13 +83,13 @@ export function CinemaBar({
             <span className="cinema-badge cinema-badge-chip">{disclosure}</span>
           </div>
           <p className="cinema-door-body">
-            تجربة فيديو سينمائية اختيارية بحجم ≈{" "}
+            فيلمٌ كامل يتحرك مع التمرير بحجم ≈{" "}
             <bdi className="num">{formatMbArabic(mbTotal)}</bdi> ميغابايت. الصور مولّدة بالذكاء
             الاصطناعي لأغراض الأجواء فقط.
           </p>
           <div className="cinema-door-actions">
             <Button type="button" className="cta-primary h-11 px-6 text-base active:scale-[0.98]" onClick={onAccept}>
-              شغّل السينما
+              شغّل الفيلم
             </Button>
             <Button
               type="button"
